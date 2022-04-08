@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">NY Times</string>
+    <string name="bookmarks_icon">bookmarks_icon</string>
 </resources>

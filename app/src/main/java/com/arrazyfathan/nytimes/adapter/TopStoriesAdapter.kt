@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.databinding.ItemArticleBinding
 import com.arrazyfathan.nytimes.utils.Utils
@@ -45,13 +46,15 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
 
         holder.binding.apply {
             Glide.with(this.root)
-                .load(article.multimedia[1].url)
+                .load(if (article.multimedia == null) R.drawable.placeholder else article.multimedia[1].url)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageViewArticle)
 
-            section.text = article.subsection.ifEmpty { article.section }
+            val sectionText = article.subsection.ifEmpty { article.section }
+
+            section.text = sectionText.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
-            tvByline.text = article.byline
+            tvByline.text = article.byline.ifEmpty { "Unknown" }
             tvAbstract.text = article.abstract
             //tvPublished.text = article.published_date?.let { Utils.dateTimeAgo(it) }
 

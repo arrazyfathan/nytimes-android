@@ -94,6 +94,12 @@ class TopStoriesFragment : Fragment() {
             swipeRefreshLayout.isRefreshing = false
         }
 
+        binding.btnBookmarks.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_topStoriesFragment_to_bookmarkFragment
+            )
+        }
+
     }
 
     private fun changeColorBackground(color: Int) {

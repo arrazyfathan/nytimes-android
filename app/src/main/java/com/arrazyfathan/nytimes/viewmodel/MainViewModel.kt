@@ -69,6 +69,8 @@ class MainViewModel(
         newsRepository.insert(article)
     }
 
+    fun getSavedArticle() = newsRepository.getSavedArticle()
+
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<NYTimesApp>().getSystemService(
             Context.CONNECTIVITY_SERVICE

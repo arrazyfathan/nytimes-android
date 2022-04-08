@@ -13,6 +13,7 @@ import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.databinding.ItemArticleBinding
 import com.arrazyfathan.nytimes.utils.Utils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.util.Util
 
@@ -49,6 +50,7 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
             Glide.with(this.root)
                 .load(if (article.multimedia == null) R.drawable.placeholder else article.multimedia!![1].url)
                 .transition(DrawableTransitionOptions.withCrossFade())
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageViewArticle)
 
             val sectionText = article.subsection?.ifEmpty { article.section }

@@ -77,6 +77,9 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
 
     //Lottie
-    implementation 'com.airbnb.android:lottie:4.1.0'
+    implementation 'com.airbnb.android:lottie:5.0.3'
+
+    // Time Ago
+    implementation 'com.github.marlonlom:timeago:4.0.3'
 
 }

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/article_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:elevation="2dp"
+    android:focusable="true"
+    android:mar="8dp"
+    app:cardCornerRadius="0dp"
+    app:strokeWidth="0dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/image_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:cardCornerRadius="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeWidth="0dp">
+
+            <ImageView
+                android:id="@+id/image_view_article"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/test" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/radius_100"
+            android:paddingStart="16dp"
+            android:paddingTop="4dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="4dp"
+            android:textColor="@color/black"
+            android:textSize="10sp"
+            app:chipStrokeWidth="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/image_container"
+            tools:text="Politics" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/domine_bold"
+            android:maxLines="3"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/image_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/section"
+            tools:text="Make any change to display this text for user ad" />
+
+        <TextView
+            android:id="@+id/tv_abstract"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/notosansdisplay_regular"
+            android:justificationMode="inter_word"
+            android:maxLines="3"
+            android:textSize="12sp"
+            android:textColor="@color/text_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/image_container"
+            app:layout_constraintEnd_toStartOf="@id/image_container"
+            app:layout_constraintStart_toStartOf="@+id/tv_title"
+            app:layout_constraintTop_toBottomOf="@+id/tv_title"
+            tools:text="Nearly every Mac app has at least one action that takes one click (or three clicks) too many to execute—nobody wants to go through four different menus or use the search bar to find the action you need, especially if it’s something you use often. When you dis…" />
+
+        <TextView
+            android:id="@+id/tv_byline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="10sp"
+            android:layout_marginBottom="16dp"
+            android:textColor="@color/text_gray"
+            android:fontFamily="@font/notosansdisplay_medium"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_abstract"
+            app:layout_constraintTop_toBottomOf="@+id/tv_abstract"
+            tools:text="By Adam Liptak" />
+
+        <View
+            android:id="@+id/dots"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@id/tv_byline"
+            android:background="@drawable/radius_100"
+            android:backgroundTint="@color/text_gray"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_byline"
+            app:layout_constraintTop_toTopOf="@+id/tv_byline" />
+
+        <TextView
+            android:id="@+id/tv_published"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/notosansdisplay_medium"
+            android:textColor="@color/text_gray"
+            android:textSize="10sp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/dots"
+            app:layout_constraintStart_toEndOf="@+id/dots"
+            app:layout_constraintTop_toTopOf="@+id/dots"
+            tools:text="A day ago" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</com.google.android.material.card.MaterialCardView>

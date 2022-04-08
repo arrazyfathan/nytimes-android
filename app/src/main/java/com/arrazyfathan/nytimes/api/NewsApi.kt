@@ -14,7 +14,7 @@ interface NewsApi {
         const val API_KEY = BuildConfig.NEWS_API_KEY
     }
 
-    @GET("/home.json")
+    @GET("home.json")
     suspend fun getTopStories(
         @Query("api-key") apiKey: String = API_KEY
     ): Response<TopStories>

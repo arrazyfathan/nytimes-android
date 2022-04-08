@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android/Tutorial/NYTimes/app/src/main/res/drawable-v24/ic_delete.xml" value="0.131" />
         <entry key="..\:/Android/Tutorial/NYTimes/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.218" />
         <entry key="..\:/Android/Tutorial/NYTimes/app/src/main/res/drawable/bookmark.xml" value="0.218" />
         <entry key="..\:/Android/Tutorial/NYTimes/app/src/main/res/drawable/bookmark_fill.xml" value="0.245" />

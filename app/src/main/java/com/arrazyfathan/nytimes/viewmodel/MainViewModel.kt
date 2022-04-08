@@ -71,6 +71,14 @@ class MainViewModel(
 
     fun getSavedArticle() = newsRepository.getSavedArticle()
 
+    fun deleteArticle(article: Article) = viewModelScope.launch {
+        newsRepository.deleteSavedArticle(article)
+    }
+
+    /*
+    * Network Handler
+    * */
+
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<NYTimesApp>().getSystemService(
             Context.CONNECTIVITY_SERVICE

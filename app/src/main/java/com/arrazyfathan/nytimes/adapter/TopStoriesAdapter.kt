@@ -1,6 +1,7 @@
 package com.arrazyfathan.nytimes.adapter
 
 import android.os.Build
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -13,6 +14,7 @@ import com.arrazyfathan.nytimes.databinding.ItemArticleBinding
 import com.arrazyfathan.nytimes.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.util.Util
 
 class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHolder>() {
 
@@ -34,7 +36,6 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
         override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
             return oldItem == newItem
         }
-
     }
 
     val differ = AsyncListDiffer(this, diffCallback)
@@ -51,12 +52,13 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
                 .into(imageViewArticle)
 
             val sectionText = article.subsection.ifEmpty { article.section }
+            val timeAgo = Utils.dateTimeAgo(article.published_date)
 
             section.text = sectionText.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
             tvByline.text = article.byline.ifEmpty { "Unknown" }
             tvAbstract.text = article.abstract
-            //tvPublished.text = article.published_date?.let { Utils.dateTimeAgo(it) }
+            tvPublished.text = timeAgo
 
             articleCard.setOnClickListener {
                 onItemClickListener?.let { it(article) }

@@ -111,7 +111,6 @@ class TopStoriesFragment : Fragment() {
         topStoriesAdapter = TopStoriesAdapter()
         binding.rvTopStories.apply {
             adapter = topStoriesAdapter
-            layoutManager = LinearLayoutManager(activity)
         }
     }
 

@@ -146,7 +146,6 @@ class BookmarkFragment : Fragment() {
         newsAdapter = TopStoriesAdapter()
         binding.rvBookmark.apply {
             adapter = newsAdapter
-            layoutManager = LinearLayoutManager(activity)
         }
     }
 

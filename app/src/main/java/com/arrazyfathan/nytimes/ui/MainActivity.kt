@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.arrazyfathan.nytimes.R
+import com.arrazyfathan.nytimes.data.local.ArticleDatabase
 import com.arrazyfathan.nytimes.repository.NewsRepository
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
 import com.arrazyfathan.nytimes.viewmodel.NewsViewModelProviderFactory
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_NYTimes)
         setContentView(R.layout.activity_main)
 
-        val newsRepository = NewsRepository()
+        val newsRepository = NewsRepository(ArticleDatabase.getInstance(this))
         val viewModelProviderFactory = NewsViewModelProviderFactory(application, newsRepository)
         viewModel = ViewModelProvider(this, viewModelProviderFactory)[MainViewModel::class.java]
 

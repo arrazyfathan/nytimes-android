@@ -9,6 +9,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.arrazyfathan.nytimes.NYTimesApp
+import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.data.model.TopStories
 import com.arrazyfathan.nytimes.repository.NewsRepository
 import com.arrazyfathan.nytimes.utils.Resources
@@ -61,6 +62,12 @@ class MainViewModel(
         return Resources.Error(response.message())
     }
 
+    /*
+    * Room
+    * */
+    fun saveArticle(article: Article) = viewModelScope.launch {
+        newsRepository.insert(article)
+    }
 
     private fun hasInternetConnection(): Boolean {
         val connectivityManager = getApplication<NYTimesApp>().getSystemService(

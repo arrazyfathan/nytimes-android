@@ -1,15 +1,22 @@
 package com.arrazyfathan.nytimes.data.model
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import java.io.Serializable
 
+@Entity(
+    tableName = "articles"
+)
 data class Article(
-    val abstract: String,
-    val byline: String,
-    val multimedia: List<Multimedia>,
-    val published_date: String,
-    val section: String,
-    val short_url: String,
-    val subsection: String,
-    val title: String,
-    val url: String
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
+    var url: String? = "",
+    var byline: String? = "",
+    var multimedia: List<Multimedia>? = null,
+    var published_date: String? = "",
+    var section: String? = "",
+    var short_url: String? = "",
+    var subsection: String? = "",
+    var title: String? = "",
+    var abstract: String? = ""
 ) : Serializable

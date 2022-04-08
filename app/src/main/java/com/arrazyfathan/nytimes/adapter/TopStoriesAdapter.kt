@@ -47,16 +47,16 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
 
         holder.binding.apply {
             Glide.with(this.root)
-                .load(if (article.multimedia == null) R.drawable.placeholder else article.multimedia[1].url)
+                .load(if (article.multimedia == null) R.drawable.placeholder else article.multimedia!![1].url)
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(imageViewArticle)
 
-            val sectionText = article.subsection.ifEmpty { article.section }
-            val timeAgo = Utils.dateTimeAgo(article.published_date)
+            val sectionText = article.subsection?.ifEmpty { article.section }
+            val timeAgo = article.published_date?.let { Utils.dateTimeAgo(it) }
 
-            section.text = sectionText.replaceFirstChar { it.uppercase() }
+            section.text = sectionText?.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
-            tvByline.text = article.byline.ifEmpty { "Unknown" }
+            tvByline.text = article.byline?.ifEmpty { "Unknown" }
             tvAbstract.text = article.abstract
             tvPublished.text = timeAgo
 

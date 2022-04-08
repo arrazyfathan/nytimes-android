@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
 import com.arrazyfathan.nytimes.ui.MainActivity
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class ArticleDetailFragment : Fragment() {
 
@@ -43,14 +44,19 @@ class ArticleDetailFragment : Fragment() {
 
         binding.webviewDetail.apply {
             webViewClient = WebViewClient()
-            loadUrl(article.url)
+            article.url?.let { loadUrl(it) }
             settings.userAgentString = "Android"
         }
 
         setupProgressBar()
 
         binding.sectionDetail.text =
-            article.subsection.ifEmpty { article.section }.replaceFirstChar { it.uppercase() }
+            article.subsection?.ifEmpty { article.section }?.replaceFirstChar { it.uppercase() }
+
+        binding.fabDetail.setOnClickListener {
+            viewModel.saveArticle(article)
+            Snackbar.make(view, "Article saved", Snackbar.LENGTH_SHORT).show()
+        }
 
     }
 

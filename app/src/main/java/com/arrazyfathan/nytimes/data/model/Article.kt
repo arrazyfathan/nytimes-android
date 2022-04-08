@@ -2,14 +2,15 @@ package com.arrazyfathan.nytimes.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import org.jetbrains.annotations.NotNull
 import java.io.Serializable
 
 @Entity(
     tableName = "articles"
 )
 data class Article(
-    @PrimaryKey(autoGenerate = true)
-    var id: Int? = null,
+    @PrimaryKey(autoGenerate = false)
+    var id: String = "",
     var url: String? = "",
     var byline: String? = "",
     var multimedia: List<Multimedia>? = null,
@@ -18,5 +19,6 @@ data class Article(
     var short_url: String? = "",
     var subsection: String? = "",
     var title: String? = "",
-    var abstract: String? = ""
+    var abstract: String? = "",
+    var isSaved: Boolean = false
 ) : Serializable

@@ -1,6 +1,7 @@
 package com.arrazyfathan.nytimes.ui.article
 
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,8 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
+import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
 import com.arrazyfathan.nytimes.ui.MainActivity
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
@@ -36,6 +39,7 @@ class ArticleDetailFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = (activity as MainActivity).viewModel
@@ -50,11 +54,39 @@ class ArticleDetailFragment : Fragment() {
 
         setupProgressBar()
 
+        if (!article.isSaved) {
+            binding.fabDetail.visibility =View.VISIBLE
+            binding.webviewDetail.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                if (scrollY > oldScrollY && scrollY > 0) {
+                    binding.fabDetail.hide()
+                }
+                if (scrollY < oldScrollY) {
+                    binding.fabDetail.show()
+                }
+            }
+        } else {
+            binding.fabDetail.visibility = View.INVISIBLE
+        }
+
         binding.sectionDetail.text =
             article.subsection?.ifEmpty { article.section }?.replaceFirstChar { it.uppercase() }
 
         binding.fabDetail.setOnClickListener {
-            viewModel.saveArticle(article)
+
+            val savedArticle = Article(
+                id = article.url!!,
+                url = article.url,
+                byline = article.byline,
+                multimedia = article.multimedia,
+                published_date = article.published_date,
+                section = article.section,
+                short_url = article.short_url,
+                subsection = article.subsection,
+                title = article.title,
+                abstract = article.abstract,
+                isSaved = true,
+            )
+            viewModel.saveArticle(savedArticle)
             Snackbar.make(view, "Article saved", Snackbar.LENGTH_SHORT).show()
         }
 

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.arrazyfathan.nytimes.R
@@ -68,7 +69,6 @@ class TopStoriesFragment : Fragment() {
                     showProgressBar()
                 }
             }
-
         }
 
         binding.btnRetry.setOnClickListener {
@@ -77,7 +77,14 @@ class TopStoriesFragment : Fragment() {
         }
 
         topStoriesAdapter.setOnItemClickListener {
-            Toast.makeText(requireContext(), "${it.title}", Toast.LENGTH_SHORT).show()
+            val bundle = Bundle().apply {
+                putSerializable("article", it)
+            }
+
+            findNavController().navigate(
+                R.id.action_topStoriesFragment_to_articleDetailFragment,
+                bundle
+            )
         }
 
         swipeRefreshLayout = binding.swipeRefresh

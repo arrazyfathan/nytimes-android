@@ -10,5 +10,22 @@
         android:name="com.arrazyfathan.nytimes.ui.topstories.TopStoriesFragment"
         android:label="TopStoriesFragment"
         tools:layout="@layout/fragment_top_stories"
-        />
+        >
+        <action
+            android:id="@+id/action_topStoriesFragment_to_articleDetailFragment"
+            app:destination="@id/articleDetailFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
+    <fragment
+        android:id="@+id/articleDetailFragment"
+        android:name="com.arrazyfathan.nytimes.ui.article.ArticleDetailFragment"
+        android:label="ArticleDetailFragment"
+        tools:layout="@layout/fragment_article">
+        <argument
+            android:name="article"
+            app:argType="com.arrazyfathan.nytimes.data.model.Article" />
+    </fragment>
 </navigation>

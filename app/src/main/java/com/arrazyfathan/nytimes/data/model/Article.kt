@@ -1,5 +1,7 @@
 package com.arrazyfathan.nytimes.data.model
 
+import java.io.Serializable
+
 data class Article(
     val abstract: String,
     val byline: String,
@@ -10,4 +12,4 @@ data class Article(
     val subsection: String,
     val title: String,
     val url: String
-)
+) : Serializable

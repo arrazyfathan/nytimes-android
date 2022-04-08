@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="gray_chip">#E8ECF0</color>
     <color name="text_gray">#272727</color>
+    <color name="bg_gray">#DADADA</color>
 </resources>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:id="@+id/top_stories_layout"
     android:layout_height="match_parent"
-    android:background="#DADADA">
+    android:background="@color/white">
 
     <RelativeLayout
         android:id="@+id/top_bar"
@@ -51,18 +51,24 @@
 
     </RelativeLayout>
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_top_stories"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
-        tools:listitem="@layout/item_article" />
+        android:id="@+id/swipe_refresh">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_top_stories"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            tools:listitem="@layout/item_article" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
 
     <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/pagination_progressbar"

@@ -82,4 +82,7 @@ dependencies {
     // Time Ago
     implementation 'com.github.marlonlom:timeago:4.0.3'
 
+    //Swipe Refresh Layout
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+
 }

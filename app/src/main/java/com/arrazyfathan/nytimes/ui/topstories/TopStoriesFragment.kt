@@ -1,5 +1,6 @@
 package com.arrazyfathan.nytimes.ui.topstories
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.adapter.TopStoriesAdapter
 import com.arrazyfathan.nytimes.databinding.FragmentTopStoriesBinding
@@ -23,6 +25,8 @@ class TopStoriesFragment : Fragment() {
 
     private var _binding: FragmentTopStoriesBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     val TAG = "TopStoriesFragment"
 
@@ -46,6 +50,7 @@ class TopStoriesFragment : Fragment() {
                 is Resources.Success -> {
                     hideProgressBar()
                     hideNoInternet()
+                    changeColorBackground(R.color.bg_gray)
                     response.data?.let { topStoriesResponse ->
                         topStoriesAdapter.differ.submitList(topStoriesResponse.results.toList())
                     }
@@ -54,6 +59,7 @@ class TopStoriesFragment : Fragment() {
                     hideProgressBar()
                     response.message?.let { message ->
                         Log.d(TAG, "Error : $message")
+                        changeColorBackground(R.color.white)
                         showNoInternet()
                         Toast.makeText(activity, "An error: $message", Toast.LENGTH_SHORT).show()
                     }
@@ -67,14 +73,25 @@ class TopStoriesFragment : Fragment() {
 
         binding.btnRetry.setOnClickListener {
             viewModel.getTopStories()
-            hideProgressBar()
-            changeColorBackground()
+            hideNoInternet()
+        }
+
+        topStoriesAdapter.setOnItemClickListener {
+            Toast.makeText(requireContext(), "${it.title}", Toast.LENGTH_SHORT).show()
+        }
+
+        swipeRefreshLayout = binding.swipeRefresh
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getTopStories()
+            hideNoInternet()
+            swipeRefreshLayout.isRefreshing = false
         }
 
     }
 
-    private fun changeColorBackground() {
-       // binding.topStoriesLayout.background = ContextCompat.getColor(requireContext(), R.color.white)
+    private fun changeColorBackground(color: Int) {
+        binding.topStoriesLayout.background =
+            ContextCompat.getDrawable(requireContext(), color)
     }
 
     private fun setupRecyclerView() {

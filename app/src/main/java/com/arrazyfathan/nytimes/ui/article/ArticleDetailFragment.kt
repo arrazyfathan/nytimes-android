@@ -1,5 +1,6 @@
 package com.arrazyfathan.nytimes.ui.article
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -55,7 +56,7 @@ class ArticleDetailFragment : Fragment() {
         setupProgressBar()
 
         if (!article.isSaved) {
-            binding.fabDetail.visibility =View.VISIBLE
+            binding.fabDetail.visibility = View.VISIBLE
             binding.webviewDetail.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
                 if (scrollY > oldScrollY && scrollY > 0) {
                     binding.fabDetail.hide()
@@ -88,6 +89,22 @@ class ArticleDetailFragment : Fragment() {
             )
             viewModel.saveArticle(savedArticle)
             Snackbar.make(view, "Article saved", Snackbar.LENGTH_SHORT).show()
+        }
+
+        binding.btnShare.setOnClickListener {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(
+                    Intent.EXTRA_TEXT, """
+                    ${article.title}
+                    ${article.abstract}
+                    ${article.short_url}
+                """.trimIndent()
+                )
+                type = "text/plain"
+            }
+            startActivity(shareIntent)
+
         }
 
     }

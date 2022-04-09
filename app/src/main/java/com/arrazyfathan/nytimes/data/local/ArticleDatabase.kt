@@ -9,7 +9,7 @@ import com.arrazyfathan.nytimes.data.model.Article
 
 @Database(
     entities = [Article::class],
-    version = 3
+    version = 1
 )
 @TypeConverters(Converters::class)
 abstract class ArticleDatabase : RoomDatabase() {

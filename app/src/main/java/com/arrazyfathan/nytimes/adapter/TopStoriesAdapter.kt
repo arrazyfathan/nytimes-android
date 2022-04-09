@@ -59,7 +59,7 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
             section.text = sectionText?.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
             tvByline.text = article.byline?.ifEmpty { "Unknown" }
-            tvAbstract.text = article.abstract
+            tvAbstract.text = article.description
             tvPublished.text = timeAgo
 
             articleCard.setOnClickListener {

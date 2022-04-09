@@ -2,7 +2,7 @@ package com.arrazyfathan.nytimes.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.jetbrains.annotations.NotNull
+import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 @Entity(
@@ -18,7 +18,8 @@ data class Article(
     var section: String? = "",
     var short_url: String? = "",
     var subsection: String? = "",
+    @SerializedName("abstract")
+    var description: String? = "",
     var title: String? = "",
-    var abstract: String? = "",
     var isSaved: Boolean = false
 ) : Serializable

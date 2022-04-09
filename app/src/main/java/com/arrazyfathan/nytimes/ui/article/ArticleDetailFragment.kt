@@ -84,7 +84,7 @@ class ArticleDetailFragment : Fragment() {
                 short_url = article.short_url,
                 subsection = article.subsection,
                 title = article.title,
-                abstract = article.abstract,
+                description = article.description,
                 isSaved = true,
             )
             viewModel.saveArticle(savedArticle)
@@ -97,7 +97,7 @@ class ArticleDetailFragment : Fragment() {
                 putExtra(
                     Intent.EXTRA_TEXT, """
                     ${article.title}
-                    ${article.abstract}
+                    ${article.description}
                     ${article.short_url}
                 """.trimIndent()
                 )

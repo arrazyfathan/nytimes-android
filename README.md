@@ -31,12 +31,15 @@ Go to the [Releases](https://github.com/arrazyfathan/NewYorkTimes-App/releases/d
 - [TimeAgo](https://github.com/marlonlom/timeago) - Simple java library for displaying dates as relative time ago language.
 - [Lottie](https://github.com/airbnb/lottie-android) - Render After Effects animations natively on Android and iOS, Web, and React Native
 - [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=id) - Implement the swipe-to-refresh UI pattern.
-## API by [NY Time API](https://developer.nytimes.com/get-started/)
+## API [NY Time API](https://developer.nytimes.com/get-started/)
 ```
-https://new-kbbi-api.herokuapp.com
-``` 
+https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
+```
 
 ## Demo App
+[![NY Times - Demo App]         
+(https://i.ytimg.com/vi/GoeznEif9ps/maxresdefault.jpg)]
+(https://www.youtube.com/watch?v=GoeznEif9ps "NY Times - Demo App")  
 
 # License
 ```xml

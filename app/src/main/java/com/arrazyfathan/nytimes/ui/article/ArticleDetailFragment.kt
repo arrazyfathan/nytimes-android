@@ -37,7 +37,6 @@ class ArticleDetailFragment : Fragment() {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
         val view = binding.root
         return view
-
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -95,18 +94,17 @@ class ArticleDetailFragment : Fragment() {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(
-                    Intent.EXTRA_TEXT, """
+                    Intent.EXTRA_TEXT,
+                    """
                     ${article.title}
                     ${article.description}
                     ${article.short_url}
-                """.trimIndent()
+                    """.trimIndent()
                 )
                 type = "text/plain"
             }
             startActivity(shareIntent)
-
         }
-
     }
 
     private fun setupProgressBar() {
@@ -117,15 +115,19 @@ class ArticleDetailFragment : Fragment() {
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
-                binding.loadingProgressWebview.visibility = View.VISIBLE
+                if (activity != null) {
+                    binding.loadingProgressWebview.visibility = View.VISIBLE
+                }
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
-                try {
-                    binding.loadingProgressWebview.visibility = View.INVISIBLE
-                } catch (e: NullPointerException) {
-                    Log.d(TAG, e.message.toString())
+                if (activity != null) {
+                    try {
+                        binding.loadingProgressWebview.visibility = View.INVISIBLE
+                    } catch (e: NullPointerException) {
+                        Log.d(TAG, e.message.toString())
+                    }
                 }
             }
         }

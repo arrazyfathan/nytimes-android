@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "473312644552",
+    "project_id": "nytimes-56c71",
+    "storage_bucket": "nytimes-56c71.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:473312644552:android:d96edf5bfc7dcd7b5184fd",
+        "android_client_info": {
+          "package_name": "com.arrazyfathan.nytimes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "473312644552-ttt0v3r2et51taslttgt0uigl3ng6s79.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.arrazyfathan.nytimes",
+            "certificate_hash": "96222cade622726262ff0dcbef4b8d0764c493ca"
+          }
+        },
+        {
+          "client_id": "473312644552-kmqb8i82t7ntvabn3c2erdflcl6k9n59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhja79SeuKOyw6CgigNdrA8i2S_Si_Gpk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "473312644552-kmqb8i82t7ntvabn3c2erdflcl6k9n59.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

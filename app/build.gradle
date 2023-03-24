@@ -7,18 +7,22 @@ plugins {
     id 'com.google.firebase.crashlytics'
 }
 
+def localPropsFile = rootProject.file("local.properties")
+def localProps = new Properties()
+localProps.load(new FileInputStream(localPropsFile))
+
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.arrazyfathan.nytimes"
         minSdk 21
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "NEWS_API_KEY", nyt_api_key)
+        buildConfigField("String", "API_KEY", localProps['API_KEY'])
     }
 
     signingConfigs {

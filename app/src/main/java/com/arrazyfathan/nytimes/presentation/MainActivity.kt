@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.ui
+package com.arrazyfathan.nytimes.presentation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,7 +10,9 @@ import com.arrazyfathan.nytimes.data.local.ArticleDatabase
 import com.arrazyfathan.nytimes.repository.NewsRepository
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
 import com.arrazyfathan.nytimes.viewmodel.NewsViewModelProviderFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainViewModel

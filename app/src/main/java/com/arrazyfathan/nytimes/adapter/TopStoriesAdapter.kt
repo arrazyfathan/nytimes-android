@@ -1,7 +1,6 @@
 package com.arrazyfathan.nytimes.adapter
 
 import android.os.Build
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -9,13 +8,12 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.arrazyfathan.nytimes.R
-import com.arrazyfathan.nytimes.data.model.Article
+import com.arrazyfathan.nytimes.core.domain.model.Article
+import com.arrazyfathan.nytimes.core.utils.Utils
 import com.arrazyfathan.nytimes.databinding.ItemArticleBinding
-import com.arrazyfathan.nytimes.utils.Utils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.util.Util
 
 class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHolder>() {
 
@@ -41,7 +39,6 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
 
     val differ = AsyncListDiffer(this, diffCallback)
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val article = differ.currentList[position]
@@ -54,20 +51,18 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
                 .into(imageViewArticle)
 
             val sectionText = article.subsection?.ifEmpty { article.section }
-            val timeAgo = article.published_date?.let { Utils.dateTimeAgo(it) }
+            val timeAgo = article.publishedDate?.let { Utils.dateTimeAgo(it) }
 
             section.text = sectionText?.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
             tvByline.text = article.byline?.ifEmpty { "Unknown" }
-            tvAbstract.text = article.description
+            tvAbstract.text = article.abstract
             tvPublished.text = timeAgo
 
             articleCard.setOnClickListener {
                 onItemClickListener?.let { it(article) }
             }
         }
-
-
     }
 
     override fun getItemCount(): Int {

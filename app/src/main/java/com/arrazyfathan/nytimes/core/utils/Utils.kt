@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.utils
+package com.arrazyfathan.nytimes.core.utils
 
 import android.os.Build
 import androidx.annotation.RequiresApi

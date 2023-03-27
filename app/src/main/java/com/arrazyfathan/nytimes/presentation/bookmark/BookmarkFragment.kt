@@ -1,24 +1,16 @@
-package com.arrazyfathan.nytimes.ui.bookmark
+package com.arrazyfathan.nytimes.presentation.bookmark
 
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.adapter.TopStoriesAdapter
 import com.arrazyfathan.nytimes.databinding.FragmentSavedArticleBinding
-import com.arrazyfathan.nytimes.ui.MainActivity
+import com.arrazyfathan.nytimes.presentation.MainActivity
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class BookmarkFragment : Fragment() {
 
@@ -32,11 +24,10 @@ class BookmarkFragment : Fragment() {
     private val background = ColorDrawable()
     private val backgroundColor = Color.parseColor("#ba000d")
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentSavedArticleBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -48,7 +39,7 @@ class BookmarkFragment : Fragment() {
         viewModel = (activity as MainActivity).viewModel
         setupRecyclerView()
 
-        newsAdapter.setOnItemClickListener {
+        /*newsAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("article", it)
             }
@@ -57,9 +48,9 @@ class BookmarkFragment : Fragment() {
                 R.id.action_bookmarkFragment_to_articleDetailFragment,
                 bundle
             )
-        }
+        }*/
 
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+        /*val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
             0,
             ItemTouchHelper.LEFT
         ) {
@@ -139,7 +130,7 @@ class BookmarkFragment : Fragment() {
 
         viewModel.getSavedArticle().observe(viewLifecycleOwner) { articles ->
             newsAdapter.differ.submitList(articles)
-        }
+        }*/
     }
 
     private fun setupRecyclerView() {

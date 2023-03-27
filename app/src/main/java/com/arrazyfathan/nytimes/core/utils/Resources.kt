@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.utils
+package com.arrazyfathan.nytimes.core.utils
 
 sealed class Resources<T>(
     val data: T? = null,

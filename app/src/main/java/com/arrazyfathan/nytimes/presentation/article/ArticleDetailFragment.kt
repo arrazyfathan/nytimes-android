@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.ui.article
+package com.arrazyfathan.nytimes.presentation.article
 
 import android.content.Intent
 import android.graphics.Bitmap
@@ -15,7 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
-import com.arrazyfathan.nytimes.ui.MainActivity
+import com.arrazyfathan.nytimes.presentation.MainActivity
 import com.arrazyfathan.nytimes.viewmodel.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 
@@ -50,6 +50,7 @@ class ArticleDetailFragment : Fragment() {
             webViewClient = WebViewClient()
             article.url?.let { loadUrl(it) }
             settings.userAgentString = "Android"
+            settings.javaScriptEnabled = true
         }
 
         setupProgressBar()

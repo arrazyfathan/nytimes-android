@@ -12,7 +12,7 @@ import com.arrazyfathan.nytimes.NYTimesApp
 import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.data.model.TopStories
 import com.arrazyfathan.nytimes.repository.NewsRepository
-import com.arrazyfathan.nytimes.utils.Resources
+import com.arrazyfathan.nytimes.core.utils.Resources
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.io.IOException

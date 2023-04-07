@@ -18,14 +18,14 @@ class TopStoriesRepository @Inject constructor(
     private val remoteDataSource: RemoteDataSource,
 ) : ITopStoriesRepository {
 
-    override fun getTopStories(): Flow<Resource<List<Article>>> {
+    override fun getTopStories(section: String): Flow<Resource<List<Article>>> {
         return flow {
             emit(Resource.Loading())
-            when (val response = remoteDataSource.getTopStoriesArticle().first()) {
+            when (val response = remoteDataSource.getTopStoriesArticle(section).first()) {
                 is ApiResponse.Success -> {
                     emit(Resource.Success(response.data.map { it.mapToDomain() }))
                 }
-                ApiResponse.Empty -> {
+                is ApiResponse.Empty -> {
                     emit(Resource.Error(message = "Data not found"))
                 }
                 is ApiResponse.Error -> {

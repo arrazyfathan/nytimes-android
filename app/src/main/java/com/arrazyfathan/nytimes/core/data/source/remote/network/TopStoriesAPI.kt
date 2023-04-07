@@ -4,6 +4,7 @@ import com.arrazyfathan.nytimes.BuildConfig
 import com.arrazyfathan.nytimes.core.data.source.remote.response.TopStoriesDto
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 /**
@@ -16,8 +17,9 @@ interface TopStoriesAPI {
         const val API_KEY = BuildConfig.API_KEY
     }
 
-    @GET("topstories/v2/home.json")
+    @GET("topstories/v2/{section}.json")
     suspend fun getTopStories(
+        @Path("section") section: String,
         @Query("api-key") apiKey: String = API_KEY,
     ): Response<TopStoriesDto>
 }

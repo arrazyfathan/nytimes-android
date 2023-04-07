@@ -1,7 +1,6 @@
 package com.arrazyfathan.nytimes.core.data.source.remote
 
-import com.arrazyfathan.nytimes.core.data.source.remote.network.ApiResponse
-import com.arrazyfathan.nytimes.core.data.source.remote.network.TopStoriesAPI
+import com.arrazyfathan.nytimes.core.data.source.remote.network.*
 import com.arrazyfathan.nytimes.core.data.source.remote.response.ArticleDto
 import com.arrazyfathan.nytimes.core.data.source.remote.response.TopStoriesDto
 import kotlinx.coroutines.Dispatchers
@@ -16,13 +15,12 @@ import javax.inject.Inject
  */
 class RemoteDataSource @Inject constructor(private val topStoriesAPI: TopStoriesAPI) {
 
-    suspend fun getTopStoriesArticle(): Flow<ApiResponse<List<ArticleDto>>> {
+    suspend fun getTopStoriesArticle(section: String): Flow<ApiResponse<List<ArticleDto>>> {
         return flow {
             try {
-                val response = topStoriesAPI.getTopStories()
+                val response = topStoriesAPI.getTopStories(section)
                 emit(handleResponse(response))
             } catch (e: Exception) {
-                e.printStackTrace()
                 emit(ApiResponse.Error(e.message!!))
             }
         }.flowOn(Dispatchers.IO)
@@ -39,10 +37,9 @@ class RemoteDataSource @Inject constructor(private val topStoriesAPI: TopStories
     }
 
     private fun getResponseError(responseCode: Int): String {
-        val strResponseCode = responseCode.toString()
-        return when (strResponseCode.drop(0)) {
-            "4" -> "Please check your internet"
-            "5" -> "Server error"
+        return when (responseCode) {
+            KEY_NO_INTERNET -> MessageResult.NO_CONNECTION
+            KEY_SERVER_ERROR -> MessageResult.SERVER_ERROR
             else -> "Unknown error"
         }
     }

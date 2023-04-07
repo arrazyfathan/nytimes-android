@@ -1,7 +1,6 @@
 package com.arrazyfathan.nytimes.presentation.topstories
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,117 +11,110 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.arrazyfathan.nytimes.R
-import com.arrazyfathan.nytimes.adapter.TopStoriesAdapter
 import com.arrazyfathan.nytimes.core.data.source.Resource
-import com.arrazyfathan.nytimes.core.utils.Resources
+import com.arrazyfathan.nytimes.core.data.source.remote.network.MessageResult
 import com.arrazyfathan.nytimes.core.utils.toast
+import com.arrazyfathan.nytimes.data.model.sectionItems
 import com.arrazyfathan.nytimes.databinding.FragmentTopStoriesBinding
-import com.arrazyfathan.nytimes.presentation.MainActivity
-import com.arrazyfathan.nytimes.viewmodel.MainViewModel
-import com.arrazyfathan.nytimes.viewmodel.TryingViewModel
+import com.arrazyfathan.nytimes.presentation.adapter.ChipAdapter
+import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
+import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class TopStoriesFragment : Fragment() {
 
-    private lateinit var viewModel: MainViewModel
-    private val tryViewModel: TryingViewModel by viewModels()
+    private val viewModel: TopStoriesViewModel by viewModels()
     private lateinit var topStoriesAdapter: TopStoriesAdapter
 
     private var _binding: FragmentTopStoriesBinding? = null
     private val binding get() = _binding!!
 
+    private var currentSection = DEFAULT_SECTION
+
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     val TAG = "TopStoriesFragment"
+
+    companion object {
+        private const val DEFAULT_SECTION = "home"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentTopStoriesBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
         setupRecyclerView()
+        setupView()
+        requestTopStories(DEFAULT_SECTION)
+        observe()
+    }
 
-        /*viewModel.topStories.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is Resources.Success -> {
-                    hideProgressBar()
-                    hideNoInternet()
-                    changeColorBackground(R.color.bg_gray)
-                    response.data?.let { topStoriesResponse ->
-                        topStoriesAdapter.differ.submitList(topStoriesResponse.results.toList())
-                    }
-                }
-                is Resources.Error -> {
-                    hideProgressBar()
-                    response.message?.let { message ->
-                        Log.d(TAG, "Error : $message")
-                        changeColorBackground(R.color.white)
-                        showNoInternet()
-                        Toast.makeText(activity, "An error: $message", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                is Resources.Loading -> {
-                    showProgressBar()
-                }
-            }
-        }*/
+    private fun requestTopStories(section: String) {
+        viewModel.getTopStories(section)
+    }
 
-        binding.btnRetry.setOnClickListener {
-            viewModel.getTopStories()
+    private fun setupView() = with(binding) {
+        btnRetry.setOnClickListener {
+            requestTopStories(currentSection)
             hideNoInternet()
         }
 
-        /*topStoriesAdapter.setOnItemClickListener {
-            val bundle = Bundle().apply {
-                putSerializable("article", it)
-            }
-
-            findNavController().navigate(
-                R.id.action_topStoriesFragment_to_articleDetailFragment,
-                bundle,
-            )
-        }*/
-
-        swipeRefreshLayout = binding.swipeRefresh
-        binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getTopStories()
+        swipeRefreshLayout = swipeRefresh
+        swipeRefresh.setOnRefreshListener {
+            requestTopStories(currentSection)
             hideNoInternet()
             swipeRefreshLayout.isRefreshing = false
         }
 
-        binding.btnBookmarks.setOnClickListener {
+        btnBookmarks.setOnClickListener {
             findNavController().navigate(
                 R.id.action_topStoriesFragment_to_bookmarkFragment,
             )
         }
 
-        tryViewModel.topStories.observe(viewLifecycleOwner) {
+        chipGroup?.setOnCheckedChangeListener { _, checkedId ->
+            val selectedChip = activity?.findViewById<Chip>(checkedId)
+            requestTopStories(selectedChip?.text.toString().lowercase())
+            currentSection = selectedChip?.text.toString().lowercase()
+        }
+    }
+
+    private fun observe() {
+        viewModel.topStories.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Error -> {
                     hideProgressBar()
                     changeColorBackground(R.color.white)
-                    showNoInternet()
-                    toast(it.message!!)
+                    handleError(it.message!!)
                 }
                 is Resource.Loading -> {
+                    binding.rvTopStories.visibility = View.GONE
                     showProgressBar()
+                    changeColorBackground(R.color.white)
                 }
                 is Resource.Success -> {
                     hideProgressBar()
                     hideNoInternet()
                     changeColorBackground(R.color.bg_gray)
+                    binding.rvTopStories.visibility = View.VISIBLE
                     topStoriesAdapter.differ.submitList(it.data)
                 }
             }
+        }
+    }
+
+    private fun handleError(message: String) {
+        when (message) {
+            MessageResult.NO_CONNECTION -> showNoInternet()
+            else -> toast(message)
         }
     }
 

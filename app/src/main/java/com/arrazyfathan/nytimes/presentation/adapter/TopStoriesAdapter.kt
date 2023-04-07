@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.adapter
+package com.arrazyfathan.nytimes.presentation.adapter
 
 import android.os.Build
 import android.view.LayoutInflater

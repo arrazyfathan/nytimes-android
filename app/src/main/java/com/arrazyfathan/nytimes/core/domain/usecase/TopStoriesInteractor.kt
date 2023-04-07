@@ -13,7 +13,7 @@ class TopStoriesInteractor @Inject constructor(
     private val topStoriesRepository: TopStoriesRepository,
 ) : TopStoriesUseCase {
 
-    override fun getTopStories(): Flow<Resource<List<Article>>> {
-        return topStoriesRepository.getTopStories()
+    override fun getTopStories(section: String): Flow<Resource<List<Article>>> {
+        return topStoriesRepository.getTopStories(section)
     }
 }

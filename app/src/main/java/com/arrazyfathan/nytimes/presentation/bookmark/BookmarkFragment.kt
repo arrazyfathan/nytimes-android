@@ -7,17 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.arrazyfathan.nytimes.adapter.TopStoriesAdapter
+import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
 import com.arrazyfathan.nytimes.databinding.FragmentSavedArticleBinding
-import com.arrazyfathan.nytimes.presentation.MainActivity
-import com.arrazyfathan.nytimes.viewmodel.MainViewModel
 
 class BookmarkFragment : Fragment() {
 
     private var _binding: FragmentSavedArticleBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: MainViewModel
     private lateinit var newsAdapter: TopStoriesAdapter
 
     /* Setup on swipe delete*/
@@ -36,7 +33,6 @@ class BookmarkFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
         setupRecyclerView()
 
         /*newsAdapter.setOnItemClickListener {

@@ -8,5 +8,5 @@ import kotlinx.coroutines.flow.Flow
  * Created by Ar Razy Fathan Rabbani on 27/03/23.
  */
 interface ITopStoriesRepository {
-    fun getTopStories(): Flow<Resource<List<Article>>>
+    fun getTopStories(section: String): Flow<Resource<List<Article>>>
 }

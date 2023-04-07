@@ -1,6 +1,5 @@
 package com.arrazyfathan.nytimes.presentation.article
 
-import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
@@ -13,15 +12,10 @@ import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
-import com.arrazyfathan.nytimes.data.model.Article
 import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
-import com.arrazyfathan.nytimes.presentation.MainActivity
-import com.arrazyfathan.nytimes.viewmodel.MainViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class ArticleDetailFragment : Fragment() {
 
-    private lateinit var viewModel: MainViewModel
     private val args: ArticleDetailFragmentArgs by navArgs()
 
     private var _binding: FragmentArticleBinding? = null
@@ -32,7 +26,7 @@ class ArticleDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View? {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -42,11 +36,11 @@ class ArticleDetailFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel = (activity as MainActivity).viewModel
+        // viewModel = (activity as MainActivity).viewModel
 
         val article = args.article
 
-        binding.webviewDetail.apply {
+        /*binding.webviewDetail.apply {
             webViewClient = WebViewClient()
             article.url?.let { loadUrl(it) }
             settings.userAgentString = "Android"
@@ -105,7 +99,7 @@ class ArticleDetailFragment : Fragment() {
                 type = "text/plain"
             }
             startActivity(shareIntent)
-        }
+        }*/
     }
 
     private fun setupProgressBar() {

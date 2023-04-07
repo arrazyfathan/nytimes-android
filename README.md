@@ -1,7 +1,7 @@
 <h1 align="center">NY Times</h1>
 
 <p align="center">  
-Simple sample news app NY Times
+Simple sample news app NY Times using Clean Architecture
 </p>
 
 <p align="center">

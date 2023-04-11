@@ -1,7 +1,7 @@
 <h1 align="center">NY Times</h1>
 
 <p align="center">  
-Simple sample news app NY Times
+Simple sample news app NY Times using Clean Architecture
 </p>
 
 <p align="center">
@@ -38,6 +38,9 @@ https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
 
 ## Demo App
 [<img src="https://i.ytimg.com/vi/GoeznEif9ps/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=GoeznEif9ps "Now in Android: 55")
+
+## ToDo
+- Implementation clean arch
 
 # License
 ```xml

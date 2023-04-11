@@ -15,10 +15,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
-class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHolder>() {
-
-    private var onItemClickListener: ((Article) -> Unit)? = null
-
+class TopStoriesAdapter(val onClick: (Article) -> Unit) :
+    RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHolder>() {
     inner class ArticleViewHolder(val binding: ItemArticleBinding) :
         RecyclerView.ViewHolder(binding.root)
 
@@ -45,31 +43,27 @@ class TopStoriesAdapter : RecyclerView.Adapter<TopStoriesAdapter.ArticleViewHold
 
         holder.binding.apply {
             Glide.with(this.root)
-                .load(if (article.multimedia == null) R.drawable.placeholder else article.multimedia!![1].url)
+                .load(if (article.multimedia.isEmpty()) R.drawable.placeholder else article.getImage())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageViewArticle)
 
-            val sectionText = article.subsection?.ifEmpty { article.section }
-            val timeAgo = article.publishedDate?.let { Utils.dateTimeAgo(it) }
+            val sectionText = article.subsection.ifEmpty { article.section }
+            val timeAgo = article.publishedDate.let { Utils.dateTimeAgo(it) }
 
-            section.text = sectionText?.replaceFirstChar { it.uppercase() }
+            section.text = sectionText.replaceFirstChar { it.uppercase() }
             tvTitle.text = article.title
-            tvByline.text = article.byline?.ifEmpty { "Unknown" }
+            tvByline.text = article.byline.ifEmpty { "Unknown" }
             tvAbstract.text = article.abstract
             tvPublished.text = timeAgo
 
             articleCard.setOnClickListener {
-                onItemClickListener?.let { it(article) }
+                onClick(article)
             }
         }
     }
 
     override fun getItemCount(): Int {
         return differ.currentList.size
-    }
-
-    fun setOnItemClickListener(listener: (Article) -> Unit) {
-        onItemClickListener = listener
     }
 }

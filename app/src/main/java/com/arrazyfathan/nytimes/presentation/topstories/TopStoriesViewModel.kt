@@ -5,8 +5,6 @@ import com.arrazyfathan.nytimes.core.data.source.Resource
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.core.domain.usecase.TopStoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,21 +23,4 @@ class TopStoriesViewModel @Inject constructor(
             }
         }
     }
-
-    /*
-    * Room
-    * */
-    /* fun saveArticle(article: Article) = viewModelScope.launch {
-         newsRepository.insert(article)
-     }*/
-
-    /*fun getSavedArticle() = newsRepository.getSavedArticle()
-
-    fun deleteArticle(article: Article) = viewModelScope.launch {
-        newsRepository.deleteSavedArticle(article)
-    }*/
-
-    /*
-    * Network Handler
-    * */
 }

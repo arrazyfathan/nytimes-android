@@ -16,4 +16,28 @@ class TopStoriesInteractor @Inject constructor(
     override fun getTopStories(section: String): Flow<Resource<List<Article>>> {
         return topStoriesRepository.getTopStories(section)
     }
+
+    override fun getAllArticle(): Flow<List<Article>> {
+        return topStoriesRepository.getAllSavedArticle()
+    }
+
+    override fun getAllBookmarkedArticle(): Flow<List<Article>> {
+        return topStoriesRepository.getBookmarkedArticle()
+    }
+
+    override suspend fun insertArticle(article: Article) {
+        topStoriesRepository.insertArticle(article)
+    }
+
+    override suspend fun deleteArticle(article: Article) {
+        topStoriesRepository.deleteArticle(article)
+    }
+
+    override fun updateArticle(article: Article, newState: Boolean) {
+        topStoriesRepository.updateArticle(article, newState)
+    }
+
+    override fun checkArticleIsBookmarked(articleId: String): Flow<Boolean> {
+        return topStoriesRepository.checkArticleIsBookmarked(articleId)
+    }
 }

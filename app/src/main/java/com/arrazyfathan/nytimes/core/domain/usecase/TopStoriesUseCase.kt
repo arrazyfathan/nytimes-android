@@ -9,4 +9,11 @@ import kotlinx.coroutines.flow.Flow
  */
 interface TopStoriesUseCase {
     fun getTopStories(section: String): Flow<Resource<List<Article>>>
+    fun getAllArticle(): Flow<List<Article>>
+    fun getAllBookmarkedArticle(): Flow<List<Article>>
+    suspend fun insertArticle(article: Article)
+    suspend fun deleteArticle(article: Article)
+    fun updateArticle(article: Article, newState: Boolean)
+
+    fun checkArticleIsBookmarked(articleId: String): Flow<Boolean>
 }

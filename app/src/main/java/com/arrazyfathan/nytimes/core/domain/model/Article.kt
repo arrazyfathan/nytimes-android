@@ -1,17 +1,14 @@
 package com.arrazyfathan.nytimes.core.domain.model
 
 data class Article(
+    var articleId: String,
     var `abstract`: String,
     var byline: String,
     var createdDate: String,
-    var desFacet: List<String>? = listOf(),
-    var geoFacet: List<String>? = listOf(),
     var itemType: String,
     var kicker: String,
     var materialTypeFacet: String,
     var multimedia: List<Multimedia>,
-    var orgFacet: List<String>,
-    var perFacet: List<String>,
     var publishedDate: String,
     var section: String,
     var shortUrl: String,
@@ -20,4 +17,10 @@ data class Article(
     var updatedDate: String,
     var uri: String,
     var url: String,
-)
+    var isBookmarked: Boolean = false
+) {
+    fun getImage() = multimedia.last().url
+    fun getMainImage() = multimedia.first().url
+    fun getImageCaption() = multimedia.map { it.caption }.first()
+    fun getImageCopyright() = multimedia.map { it.copyright }.first()
+}

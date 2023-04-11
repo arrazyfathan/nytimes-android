@@ -9,10 +9,6 @@ data class ArticleDto(
     var byline: String? = "",
     @SerializedName("created_date")
     var createdDate: String? = "",
-    @SerializedName("des_facet")
-    var desFacet: List<String>? = listOf(),
-    @SerializedName("geo_facet")
-    var geoFacet: List<String>? = listOf(),
     @SerializedName("item_type")
     var itemType: String? = "",
     @SerializedName("kicker")
@@ -20,11 +16,7 @@ data class ArticleDto(
     @SerializedName("material_type_facet")
     var materialTypeFacet: String? = "",
     @SerializedName("multimedia")
-    var multimediaDto: List<MultimediaDto> = listOf(),
-    @SerializedName("org_facet")
-    var orgFacet: List<String>? = listOf(),
-    @SerializedName("per_facet")
-    var perFacet: List<String>? = listOf(),
+    var multimediaDto: List<MultimediaDto>? = listOf(),
     @SerializedName("published_date")
     var publishedDate: String? = "",
     @SerializedName("section")

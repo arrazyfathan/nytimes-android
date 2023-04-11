@@ -1,44 +1,52 @@
 package com.arrazyfathan.nytimes.presentation.article
 
-import android.graphics.Bitmap
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
+import coil.load
+import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
+import com.arrazyfathan.nytimes.utils.format
+import com.arrazyfathan.nytimes.utils.fromJson
+import com.arrazyfathan.nytimes.utils.launchUrl
+import com.arrazyfathan.nytimes.utils.toLocalDateTime
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ArticleDetailFragment : Fragment() {
 
+    private val viewModel: ArticleDetailViewModel by viewModels()
     private val args: ArticleDetailFragmentArgs by navArgs()
-
     private var _binding: FragmentArticleBinding? = null
     private val binding get() = _binding!!
 
-    private val TAG = "ArticleFragment"
+    companion object {
+        private const val TAG = "ArticleFragment"
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentArticleBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // viewModel = (activity as MainActivity).viewModel
 
-        val article = args.article
+        val article = fromJson<Article>(args.article)
+        setupView(article)
 
         /*binding.webviewDetail.apply {
             webViewClient = WebViewClient()
@@ -102,29 +110,68 @@ class ArticleDetailFragment : Fragment() {
         }*/
     }
 
-    private fun setupProgressBar() {
-        binding.webviewDetail.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return false
-            }
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun setupView(article: Article) = with(binding) {
+        val formattedDate = article.publishedDate.toLocalDateTime().format("EEEE, MMMM dd yyyy")
+        imgDetailNews.load(article.getMainImage()) {
+            crossfade(true)
+        }
+        sectionDetail.text = article.section.replaceFirstChar { it.uppercase() }
+        newsTitle.text = article.title
+        author.text = article.byline
+        date.text = formattedDate
+        captions.text = article.abstract
+        captionImage.text = article.getImageCaption()
+        imageCopyright.text = article.getImageCopyright()
+        thumbnails.load(article.getImage())
+        titleOpenLinks.text = article.title
 
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                if (activity != null) {
-                    binding.loadingProgressWebview.visibility = View.VISIBLE
-                }
+        btnShare.setOnClickListener {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    """
+                    ${article.title}
+                    ${article.abstract}
+                    ${article.shortUrl}
+                    """.trimIndent(),
+                )
+                type = "text/plain"
             }
+            startActivity(shareIntent)
+        }
 
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                if (activity != null) {
-                    try {
-                        binding.loadingProgressWebview.visibility = View.INVISIBLE
-                    } catch (e: NullPointerException) {
-                        Log.d(TAG, e.message.toString())
-                    }
-                }
-            }
+        btnOpenLinks.setOnClickListener {
+            requireContext().launchUrl(article.shortUrl)
+        }
+
+        viewModel.checkArticleIsBookmarked(article.shortUrl).observe(viewLifecycleOwner) {
+            fabDetail.isVisible = !it
+        }
+
+        fabDetail.setOnClickListener {
+            viewModel.bookmarkArticle(
+                Article(
+                    articleId = article.shortUrl,
+                    abstract = article.abstract,
+                    byline = article.byline,
+                    createdDate = article.createdDate,
+                    itemType = article.itemType,
+                    kicker = article.kicker,
+                    materialTypeFacet = article.materialTypeFacet,
+                    multimedia = article.multimedia,
+                    publishedDate = article.publishedDate,
+                    section = article.section,
+                    shortUrl = article.shortUrl,
+                    subsection = article.subsection,
+                    title = article.title,
+                    updatedDate = article.updatedDate,
+                    uri = article.uri,
+                    url = article.url,
+                    isBookmarked = true,
+                ),
+            )
         }
     }
 

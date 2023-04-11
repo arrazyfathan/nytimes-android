@@ -4,8 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -14,10 +13,9 @@ import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.core.data.source.Resource
 import com.arrazyfathan.nytimes.core.data.source.remote.network.MessageResult
 import com.arrazyfathan.nytimes.core.utils.toast
-import com.arrazyfathan.nytimes.data.model.sectionItems
 import com.arrazyfathan.nytimes.databinding.FragmentTopStoriesBinding
-import com.arrazyfathan.nytimes.presentation.adapter.ChipAdapter
 import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
+import com.arrazyfathan.nytimes.utils.toJson
 import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,18 +24,14 @@ class TopStoriesFragment : Fragment() {
 
     private val viewModel: TopStoriesViewModel by viewModels()
     private lateinit var topStoriesAdapter: TopStoriesAdapter
-
     private var _binding: FragmentTopStoriesBinding? = null
     private val binding get() = _binding!!
-
     private var currentSection = DEFAULT_SECTION
-
     private lateinit var swipeRefreshLayout: SwipeRefreshLayout
-
-    val TAG = "TopStoriesFragment"
 
     companion object {
         private const val DEFAULT_SECTION = "home"
+        private const val TAG = "TopStoriesFragment"
     }
 
     override fun onCreateView(
@@ -80,7 +74,7 @@ class TopStoriesFragment : Fragment() {
             )
         }
 
-        chipGroup?.setOnCheckedChangeListener { _, checkedId ->
+        chipGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedChip = activity?.findViewById<Chip>(checkedId)
             requestTopStories(selectedChip?.text.toString().lowercase())
             currentSection = selectedChip?.text.toString().lowercase()
@@ -92,20 +86,17 @@ class TopStoriesFragment : Fragment() {
             when (it) {
                 is Resource.Error -> {
                     hideProgressBar()
-                    changeColorBackground(R.color.white)
                     handleError(it.message!!)
                 }
                 is Resource.Loading -> {
                     binding.rvTopStories.visibility = View.GONE
                     showProgressBar()
-                    changeColorBackground(R.color.white)
                 }
                 is Resource.Success -> {
                     hideProgressBar()
                     hideNoInternet()
-                    changeColorBackground(R.color.bg_gray)
                     binding.rvTopStories.visibility = View.VISIBLE
-                    topStoriesAdapter.differ.submitList(it.data)
+                    topStoriesAdapter.differ.submitList(it.data?.filter { data -> data.title.isNotBlank() })
                 }
             }
         }
@@ -118,13 +109,14 @@ class TopStoriesFragment : Fragment() {
         }
     }
 
-    private fun changeColorBackground(color: Int) {
-        binding.topStoriesLayout.background =
-            ContextCompat.getDrawable(requireContext(), color)
-    }
-
     private fun setupRecyclerView() {
-        topStoriesAdapter = TopStoriesAdapter()
+        topStoriesAdapter = TopStoriesAdapter { article ->
+            val bundle = bundleOf("article" to article.toJson())
+            findNavController().navigate(
+                R.id.action_topStoriesFragment_to_articleDetailFragment,
+                bundle,
+            )
+        }
         binding.rvTopStories.apply {
             adapter = topStoriesAdapter
         }

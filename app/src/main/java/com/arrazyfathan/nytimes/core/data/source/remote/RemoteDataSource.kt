@@ -40,6 +40,7 @@ class RemoteDataSource @Inject constructor(private val topStoriesAPI: TopStories
         return when (responseCode) {
             KEY_NO_INTERNET -> MessageResult.NO_CONNECTION
             KEY_SERVER_ERROR -> MessageResult.SERVER_ERROR
+            429 -> "To many request"
             else -> "Unknown error"
         }
     }

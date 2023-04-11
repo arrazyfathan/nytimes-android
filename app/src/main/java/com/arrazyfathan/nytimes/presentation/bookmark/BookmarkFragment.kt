@@ -6,12 +6,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.databinding.FragmentSavedArticleBinding
+import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
+import com.arrazyfathan.nytimes.utils.toJson
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class BookmarkFragment : Fragment() {
 
+    private val viewModel: BookmarkViewModel by viewModels()
     private var _binding: FragmentSavedArticleBinding? = null
     private val binding get() = _binding!!
 
@@ -25,10 +35,9 @@ class BookmarkFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         _binding = FragmentSavedArticleBinding.inflate(inflater, container, false)
-        val view = binding.root
-        return view
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -127,10 +136,25 @@ class BookmarkFragment : Fragment() {
         viewModel.getSavedArticle().observe(viewLifecycleOwner) { articles ->
             newsAdapter.differ.submitList(articles)
         }*/
+
+        observe()
+    }
+
+    private fun observe() {
+        viewModel.getAllBookmarkedArticle().observe(viewLifecycleOwner) { articles ->
+            binding.emptyText?.isVisible = articles.isEmpty()
+            newsAdapter.differ.submitList(articles)
+        }
     }
 
     private fun setupRecyclerView() {
-        newsAdapter = TopStoriesAdapter()
+        newsAdapter = TopStoriesAdapter { article ->
+            val bundle = bundleOf("article" to article.toJson())
+            findNavController().navigate(
+                R.id.action_bookmarkFragment_to_articleDetailFragment,
+                bundle,
+            )
+        }
         binding.rvBookmark.apply {
             adapter = newsAdapter
         }

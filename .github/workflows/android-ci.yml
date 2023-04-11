@@ -1,78 +1,44 @@
-name: Android CI
+name: Android Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    tags:
+      - 'v*.*.*' # This will trigger the workflow when a new tag is pushed in the format of v1.0.0
 
 jobs:
-
-  test:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Run Unit Test
-        run: ./gradlew test
-
   build:
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v2
-    - name: set up JDK 11
-      uses: actions/setup-java@v2
-      with:
-        java-version: '11'
-        distribution: 'temurin'
-        cache: gradle
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: build release
-      run: ./gradlew assembleDebug
-    - name: Firebase App Distribution
-      uses: wzieba/Firebase-Distribution-Github-Action@v1.3.3
-      with:
-        appId: '1:473312644552:android:d96edf5bfc7dcd7b5184fd'
-        token: '1//0gPN-RlEZNuClCgYIARAAGBASNwF-L9IrZsbok0ChabAaO-Y05858t4tnj6dBex5v9gddNyHNv9IZwJINVR9TOxN9rScEBP2IyU4'
-        groups: test-group
-        file: app/build/outputs/apk/debug/app-debug.apk
-
-
-  apk:
-    name: Generate APK
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: set up JDK 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build Debug APK
+      - name: Build APK
         run: ./gradlew assembleDebug
-      - name: Upload APK
-        uses: actions/upload-artifact@v3
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: app
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-release
           path: app/build/outputs/apk/debug/app-debug.apk
-      
-    
 
-
+      - name: Publish Release
+        id: publish_release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: app/build/outputs/apk/debug/app-debug.apk
+          asset_name: app-release.apk
+          asset_content_type: application/vnd.android.package-archive

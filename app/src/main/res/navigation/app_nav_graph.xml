@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/topStoriesFragment"
-        android:name="com.arrazyfathan.nytimes.ui.topstories.TopStoriesFragment"
+        android:name="com.arrazyfathan.nytimes.presentation.topstories.TopStoriesFragment"
         android:label="TopStoriesFragment"
         tools:layout="@layout/fragment_top_stories"
         >
@@ -17,7 +17,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_topStoriesFragment_to_bookmarkFragment"
             app:destination="@id/bookmarkFragment"
@@ -28,16 +28,16 @@
     </fragment>
     <fragment
         android:id="@+id/articleDetailFragment"
-        android:name="com.arrazyfathan.nytimes.ui.article.ArticleDetailFragment"
+        android:name="com.arrazyfathan.nytimes.presentation.article.ArticleDetailFragment"
         android:label="ArticleDetailFragment"
         tools:layout="@layout/fragment_article">
         <argument
             android:name="article"
-            app:argType="com.arrazyfathan.nytimes.data.model.Article" />
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/bookmarkFragment"
-        android:name="com.arrazyfathan.nytimes.ui.bookmark.BookmarkFragment"
+        android:name="com.arrazyfathan.nytimes.presentation.bookmark.BookmarkFragment"
         android:label="BookmarkFragment"
         tools:layout="@layout/fragment_saved_article">
         <action

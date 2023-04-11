@@ -34,8 +34,7 @@
                 android:layout_height="130dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/test" />
+                app:layout_constraintTop_toTopOf="parent"/>
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -119,12 +118,13 @@
 
         <TextView
             android:id="@+id/tv_published"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/notosansdisplay_medium"
             android:textColor="@color/text_gray"
             android:textSize="10sp"
             android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="@+id/dots"
             app:layout_constraintStart_toEndOf="@+id/dots"
             app:layout_constraintTop_toTopOf="@+id/dots"

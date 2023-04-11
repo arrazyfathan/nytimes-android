@@ -2,4 +2,6 @@
     <string name="app_name">NY Times</string>
     <string name="bookmarks_icon">bookmarks_icon</string>
     <string name="floatingbutton">floatingbutton</string>
+    <string name="author_label">Author :</string>
+    <string name="date_label">Date :</string>
 </resources>

@@ -22,7 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create local.properties file
-        run: echo "API_KEY=${{ secrets.API_KEY }}" >> local.properties
+        run: |
+         echo "API_KEY=${{ secrets.API_KEY }}" > local.properties
+         cat local.properties
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Setup JDK

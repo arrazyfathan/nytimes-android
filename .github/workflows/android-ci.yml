@@ -3,7 +3,6 @@ name: Android CI
 env:
   # The name of the main module repository
   main_project_module: app
-  API_KEY: ${{ secrets.API_KEY }}
 
 on:
   # Triggers the workflow on push or pull request events but only for default and protected branches
@@ -22,10 +21,10 @@ jobs:
     name: Generate APK
     runs-on: ubuntu-latest
     steps:
-      - name: Create local.properties file
-        run: |
-         echo "API_KEY=$API_KEY" > local.properties
-         cat local.properties
+      - name: Access APOD_API_KEY
+        env:
+          API_KEY: ${{ secrets.API_KEY }}
+        run: echo API_KEY=\"$API_KEY\" > ./local.properties
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Setup JDK

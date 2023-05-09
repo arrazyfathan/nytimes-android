@@ -21,6 +21,11 @@ jobs:
     name: Generate APK
     runs-on: ubuntu-latest
     steps:
+      - name: Set API_KEY
+        env:
+          deployment: ${{ secrets.API_KEY }}
+        run: |
+          echo "API_KEY=$API_KEY" >> local.properties
       - name: Checkout
         uses: actions/checkout@v2.4.0
       - name: Setup JDK

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "NY Times"
 include(":app")
+include(":logging")

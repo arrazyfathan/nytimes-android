@@ -39,4 +39,5 @@ object Dependencies {
     val stickyView by lazy { "com.github.amarjain07:StickyScrollView:${Version.stickyScrollView}"}
     val coil by lazy { "io.coil-kt:coil:${Version.coil}"}
     val androidBrowser by lazy { "androidx.browser:browser:${Version.androidBrowser}"}
+    val timber by lazy { "com.jakewharton.timber:timber:${Version.timber}"}
 }

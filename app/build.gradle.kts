@@ -1,3 +1,5 @@
+@file:Suppress("UnstableApiUsage")
+
 import java.util.Properties
 
 plugins {
@@ -28,7 +30,7 @@ android {
         versionName = DefaultConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "$apiKey")
+        buildConfigField("String", "API_KEY", apiKey)
     }
 
     signingConfigs {
@@ -64,13 +66,15 @@ android {
     buildFeatures {
         viewBinding = true
     }
-    lintOptions {
-        isCheckReleaseBuilds = false
-        isAbortOnError = false
+    lint {
+        checkReleaseBuilds = false
+        abortOnError = false
     }
 }
 
 dependencies {
+
+    implementation(project(":logging"))
 
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.appCompat)

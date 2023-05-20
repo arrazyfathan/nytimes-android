@@ -32,4 +32,5 @@ object Version {
     const val coil = "2.3.0"
     const val androidBrowser = "1.5.0"
     const val navigationSafeArgs = "2.5.3"
+    const val timber = "5.0.1"
 }

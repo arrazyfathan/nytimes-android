@@ -1,6 +1,6 @@
 package com.arrazyfathan.nytimes.core.data.source.remote.network
 
-import android.util.Log
+import com.arrazyfathan.logging.Logger.d
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParser
 import com.google.gson.JsonSyntaxException
@@ -12,17 +12,16 @@ import okhttp3.logging.HttpLoggingInterceptor
 class LoggingInterceptor : HttpLoggingInterceptor.Logger {
 
     override fun log(message: String) {
-        val logName = "ApiLogger"
         if (message.startsWith("{") || message.startsWith("[")) {
             try {
                 val prettyPrintJson = GsonBuilder().setPrettyPrinting()
                     .create().toJson(JsonParser().parse(message))
-                Log.d(logName, prettyPrintJson)
+                d("ApiLogger : $prettyPrintJson")
             } catch (m: JsonSyntaxException) {
-                Log.d(logName, message)
+                d("ApiLogger : $message")
             }
         } else {
-            Log.d(logName, message)
+            d("ApiLogger : $message")
             return
         }
     }

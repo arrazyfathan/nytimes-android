@@ -1,7 +1,7 @@
 <h1 align="center">NY Times</h1>
 
 <p align="center">  
-Simple sample news app NY Times using Clean Architecture
+This project is an Android application that demonstrates the effective implementation of Clean Architecture in Android app development. It utilizes The New York Times API to fetch and display the latest news to users.
 </p>
 
 <p align="center">

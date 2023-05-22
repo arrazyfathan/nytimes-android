@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.arrazyfathan.logging.Logger
 import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.core.data.source.Resource
 import com.arrazyfathan.nytimes.core.data.source.remote.network.MessageResult
@@ -78,6 +79,10 @@ class TopStoriesFragment : Fragment() {
             val selectedChip = activity?.findViewById<Chip>(checkedId)
             requestTopStories(selectedChip?.text.toString().lowercase())
             currentSection = selectedChip?.text.toString().lowercase()
+        }
+
+        topBar.setOnClickListener {
+            Logger.d("Clicked")
         }
     }
 

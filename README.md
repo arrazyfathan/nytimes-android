@@ -36,6 +36,24 @@ Go to the [Releases](https://github.com/arrazyfathan/NewYorkTimes-App/releases/d
 https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
 ```
 
+## Dependency Diagram
+
+```mermaid
+%%{
+  init: {
+    'theme': 'neutral'
+  }
+}%%
+
+graph LR
+
+  app --> logging
+  app --> logging
+  app --> logging
+  app --> logging
+
+```
+
 ## Demo App
 [<img src="https://i.ytimg.com/vi/GoeznEif9ps/maxresdefault.jpg" width="50%">](https://www.youtube.com/watch?v=GoeznEif9ps "Now in Android: 55")
 

@@ -1,3 +1,5 @@
+import dev.iurysouza.modulegraph.Orientation
+import dev.iurysouza.modulegraph.Theme
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     val kotlinVersion = "1.8.0"
@@ -17,6 +19,14 @@ plugins {
     id("com.android.application") version "7.2.0" apply false
     id("com.android.library") version "7.2.0" apply false
     kotlin("android") version "1.8.0" apply false
+    id("dev.iurysouza.modulegraph") version "0.3.0"
+}
+
+moduleGraphConfig {
+    readmePath.set("$projectDir/README.md")
+    heading.set("## Dependency Diagram")
+    theme.set(Theme.NEUTRAL)
+    orientation.set(Orientation.LEFT_TO_RIGHT)
 }
 
 tasks {

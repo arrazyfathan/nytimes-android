@@ -34,9 +34,11 @@ class TopStoriesRepository @Inject constructor(
                 is ApiResponse.Success -> {
                     emit(Resource.Success(response.data.map { it.mapToDomain() }))
                 }
+
                 is ApiResponse.Empty -> {
                     emit(Resource.Error(message = "Data not found"))
                 }
+
                 is ApiResponse.Error -> {
                     emit(Resource.Error(response.errorMessage))
                 }

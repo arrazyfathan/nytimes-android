@@ -2,7 +2,7 @@ package com.arrazyfathan.nytimes.core.domain.model
 
 data class Article(
     var articleId: String,
-    var `abstract`: String,
+    var description: String,
     var byline: String,
     var createdDate: String,
     var itemType: String,

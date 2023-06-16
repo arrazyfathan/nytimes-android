@@ -120,7 +120,7 @@ class ArticleDetailFragment : Fragment() {
         newsTitle.text = article.title
         author.text = article.byline
         date.text = formattedDate
-        captions.text = article.abstract
+        captions.text = article.description
         captionImage.text = article.getImageCaption()
         imageCopyright.text = article.getImageCopyright()
         thumbnails.load(article.getImage())
@@ -133,7 +133,7 @@ class ArticleDetailFragment : Fragment() {
                     Intent.EXTRA_TEXT,
                     """
                     ${article.title}
-                    ${article.abstract}
+                    ${article.description}
                     ${article.shortUrl}
                     """.trimIndent(),
                 )
@@ -154,7 +154,7 @@ class ArticleDetailFragment : Fragment() {
             viewModel.bookmarkArticle(
                 Article(
                     articleId = article.shortUrl,
-                    abstract = article.abstract,
+                    description = article.description,
                     byline = article.byline,
                     createdDate = article.createdDate,
                     itemType = article.itemType,

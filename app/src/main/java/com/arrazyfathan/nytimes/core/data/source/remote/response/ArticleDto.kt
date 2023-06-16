@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class ArticleDto(
     @SerializedName("abstract")
-    var `abstract`: String? = "",
+    var description: String? = "",
     @SerializedName("byline")
     var byline: String? = "",
     @SerializedName("created_date")

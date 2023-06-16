@@ -2,6 +2,7 @@ package com.arrazyfathan.nytimes.presentation.bookmark
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.core.domain.usecase.TopStoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -16,4 +17,8 @@ class BookmarkViewModel @Inject constructor(
 ) : ViewModel() {
 
     fun getAllBookmarkedArticle() = topStoriesUseCase.getAllArticle().asLiveData()
+
+    fun navigateToDetail(article: Article) {
+
+    }
 }

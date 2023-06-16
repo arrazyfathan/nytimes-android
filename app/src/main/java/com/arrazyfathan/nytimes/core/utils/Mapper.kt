@@ -24,7 +24,7 @@ fun TopStoriesDto.mapToDomain(): TopStories {
 fun ArticleDto.mapToDomain(): Article {
     return Article(
         articleId = "",
-        abstract = this.abstract.orEmpty(),
+        description = this.description.orEmpty(),
         byline = this.byline.orEmpty(),
         createdDate = this.createdDate.orEmpty(),
         itemType = this.itemType.orEmpty(),
@@ -58,7 +58,7 @@ fun MultimediaDto.mapToDomain(): Multimedia {
 fun ArticleEntity.mapToDomain(): Article {
     return Article(
         articleId = this.articleId,
-        abstract = this.abstract,
+        description = this.description,
         byline = this.byline,
         createdDate = this.createdDate,
         itemType = this.itemType,
@@ -79,7 +79,7 @@ fun ArticleEntity.mapToDomain(): Article {
 fun Article.mapToEntity(): ArticleEntity {
     return ArticleEntity(
         articleId = this.articleId,
-        abstract = this.abstract,
+        description = this.description,
         byline = this.byline,
         createdDate = this.createdDate,
         itemType = this.itemType,

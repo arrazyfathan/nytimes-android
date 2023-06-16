@@ -12,7 +12,7 @@ import com.arrazyfathan.nytimes.core.domain.model.Multimedia
 data class ArticleEntity(
     @PrimaryKey(autoGenerate = false)
     var articleId: String = "",
-    var `abstract`: String = "",
+    var description: String = "",
     var byline: String = "",
     var createdDate: String = "",
     var itemType: String = "",

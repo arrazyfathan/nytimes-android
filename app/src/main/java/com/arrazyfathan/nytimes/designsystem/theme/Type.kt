@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package com.arrazyfathan.nytimes.presentation.theme
+package com.arrazyfathan.nytimes.designsystem.theme
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import com.arrazyfathan.nytimes.R
 
-val Domine = FontFamily(
-    Font(R.font.domine_bold, FontWeight.Bold),
-    Font(R.font.domine_regular, FontWeight.Normal),
-)
+val DomineBold = FontFamily(Font(R.font.domine_bold))
+val DomineRegular = FontFamily(Font(R.font.domine_regular))
 
-val NotoSans = FontFamily(
-    Font(R.font.notosansdisplay_regular, FontWeight.Normal),
-    Font(R.font.notosansdisplay_semibold, FontWeight.SemiBold),
-    Font(R.font.notosansdisplay_bold, FontWeight.Bold),
-    Font(R.font.notosansdisplay_light, FontWeight.Light),
-)
+val NotoSansRegular = FontFamily(Font(R.font.notosansdisplay_regular))
+val NotoSansSemiBold = FontFamily(Font(R.font.notosansdisplay_semibold))
+val NotoSansBold = FontFamily(Font(R.font.notosansdisplay_bold))
+val NOtoSansLight = FontFamily(Font(R.font.notosansdisplay_light))

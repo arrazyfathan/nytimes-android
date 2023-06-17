@@ -1,6 +1,6 @@
 import dev.iurysouza.modulegraph.Orientation
 import dev.iurysouza.modulegraph.Theme
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
 buildscript {
     val kotlinVersion = "1.8.0"
     repositories {

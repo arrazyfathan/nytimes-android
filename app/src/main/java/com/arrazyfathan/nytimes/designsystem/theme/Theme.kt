@@ -1,4 +1,4 @@
-package com.arrazyfathan.nytimes.presentation.theme
+package com.arrazyfathan.nytimes.designsystem.theme
 
 import androidx.compose.runtime.Composable
 import com.google.accompanist.themeadapter.material.MdcTheme

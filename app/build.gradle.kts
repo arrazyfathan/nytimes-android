@@ -81,23 +81,22 @@ dependencies {
     implementation(project(":logging"))
 
     // Compose
-    val composeBom = platform("androidx.compose:compose-bom:2023.05.01")
+    val composeBom = platform(Dependencies.composeBom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-
-    implementation("androidx.compose.runtime:runtime")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.foundation:foundation")
-    implementation("androidx.compose.foundation:foundation-layout")
-    implementation("androidx.compose.material:material")
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
-    implementation("androidx.compose.runtime:runtime-livedata")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-
-    implementation("com.google.accompanist:accompanist-themeadapter-material:0.30.1")
-
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation(Dependencies.composeRuntime)
+    implementation(Dependencies.composeUI)
+    implementation(Dependencies.composeFoundation)
+    implementation("androidx.compose.animation:animation:1.4.3")
+    implementation(Dependencies.composeFoundationLayout)
+    implementation(Dependencies.composeMaterial)
+    implementation(Dependencies.composeConstraintLayout)
+    implementation(Dependencies.composeLiveData)
+    implementation(Dependencies.composePreview)
+    debugImplementation(Dependencies.composeTooling)
+    implementation(Dependencies.accompanistThemeAdapter)
+    implementation(Dependencies.composeCoil)
+    implementation(Dependencies.swipeAction)
 
     implementation(Dependencies.coreKtx)
     implementation(Dependencies.appCompat)

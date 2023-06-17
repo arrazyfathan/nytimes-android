@@ -33,4 +33,9 @@ object Version {
     const val androidBrowser = "1.5.0"
     const val navigationSafeArgs = "2.5.3"
     const val timber = "5.0.1"
+    const val composeBom = "2023.05.01"
+    const val accompanistThemeAdapter = "0.30.1"
+    const val coilCompose = "2.4.0"
+    const val constraintLayoutCompose = "1.0.1"
+    const val swipeActionCompose = "1.1.1"
 }

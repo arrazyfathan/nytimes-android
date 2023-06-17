@@ -16,8 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.core.domain.model.Article
+import com.arrazyfathan.nytimes.designsystem.theme.NyTimesTheme
 import com.arrazyfathan.nytimes.utils.toJson
-import com.google.accompanist.themeadapter.material.MdcTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -34,7 +34,7 @@ class BookmarkFragment : Fragment() {
             // Dispose when the view LifecycleOwner is destroyed
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                MdcTheme {
+                NyTimesTheme {
                     BookmarkScreen(
                         viewModel,
                         modifier = Modifier.background(Color.White).fillMaxSize(),

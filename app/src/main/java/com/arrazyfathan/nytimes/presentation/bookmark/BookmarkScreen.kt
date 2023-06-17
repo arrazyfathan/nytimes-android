@@ -71,6 +71,40 @@ fun BookmarkScreen(
             }
         },
     ) { paddingValues ->
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = {
+                    Text(
+                        "Are you sure you want to delete this?",
+                        fontFamily = NotoSansSemiBold,
+                        fontSize = 18.sp,
+                    )
+                },
+                text = {
+                    Text(
+                        "This action cannot be undone",
+                        fontFamily = NotoSansRegular,
+                        fontSize = 16.sp,
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        state.selectedArticle?.let(viewModel::removeArticle)
+                        showDialog = false
+                    }) {
+                        Text("Delete", fontFamily = NotoSansSemiBold)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("Cancel", fontFamily = NotoSansSemiBold)
+                    }
+                },
+            )
+        }
+
         Column(
             modifier = modifier,
             verticalArrangement = Arrangement.Center,
@@ -104,39 +138,6 @@ fun BookmarkScreen(
                                 .animateItemPlacement()
                                 .fillParentMaxWidth(),
                         )
-
-                        if (showDialog) {
-                            AlertDialog(
-                                onDismissRequest = { showDialog = false },
-                                title = {
-                                    Text(
-                                        "Are you sure you want to delete this?",
-                                        fontFamily = NotoSansSemiBold,
-                                        fontSize = 18.sp,
-                                    )
-                                },
-                                text = {
-                                    Text(
-                                        "This action cannot be undone",
-                                        fontFamily = NotoSansRegular,
-                                        fontSize = 16.sp,
-                                    )
-                                },
-                                confirmButton = {
-                                    TextButton(onClick = {
-                                        state.selectedArticle?.let(viewModel::removeArticle)
-                                        showDialog = false
-                                    }) {
-                                        Text("Delete", fontFamily = NotoSansSemiBold)
-                                    }
-                                },
-                                dismissButton = {
-                                    TextButton(onClick = { showDialog = false }) {
-                                        Text("Cancel", fontFamily = NotoSansSemiBold)
-                                    }
-                                },
-                            )
-                        }
                     }
                 }
             }

@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.core.domain.usecase.TopStoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,12 +20,21 @@ class ArticleDetailViewModel @Inject constructor(
     private val topStoriesUseCase: TopStoriesUseCase,
 ) : ViewModel() {
 
+    private var _state = MutableSharedFlow<ArticleDetailUiState>()
+    val state: SharedFlow<ArticleDetailUiState> get() = _state
+
     fun checkArticleIsBookmarked(articleId: String) =
-        topStoriesUseCase.checkArticleIsBookmarked(articleId).asLiveData()
+        topStoriesUseCase.checkArticleIsBookmarked(articleId)
 
     fun bookmarkArticle(article: Article) {
         viewModelScope.launch {
             topStoriesUseCase.insertArticle(article)
+        }
+    }
+
+    fun removeBookmark(article: Article) {
+        viewModelScope.launch {
+            topStoriesUseCase.deleteArticle(article)
         }
     }
 }

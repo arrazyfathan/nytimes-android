@@ -1,19 +1,18 @@
 package com.arrazyfathan.nytimes.core.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.github.marlonlom.utilities.timeago.TimeAgo
-import java.time.Instant
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Utils {
 
     companion object {
 
-        @RequiresApi(Build.VERSION_CODES.O)
         fun dateTimeAgo(date: String): String {
             val dateFormatted = date.substring(0, 19) + "Z"
-            val instant = Instant.parse(dateFormatted)
-            val ms = instant.toEpochMilli()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+            val parsedDate = dateFormat.parse(dateFormatted)
+            val ms = parsedDate?.time ?: 0
             return TimeAgo.using(ms).replaceFirstChar { it.uppercaseChar() }
         }
     }

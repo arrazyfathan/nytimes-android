@@ -25,5 +25,6 @@ val DomineRegular = FontFamily(Font(R.font.domine_regular))
 
 val NotoSansRegular = FontFamily(Font(R.font.notosansdisplay_regular))
 val NotoSansSemiBold = FontFamily(Font(R.font.notosansdisplay_semibold))
+val NotoSansSemiMedium = FontFamily(Font(R.font.notosansdisplay_medium))
 val NotoSansBold = FontFamily(Font(R.font.notosansdisplay_bold))
 val NOtoSansLight = FontFamily(Font(R.font.notosansdisplay_light))

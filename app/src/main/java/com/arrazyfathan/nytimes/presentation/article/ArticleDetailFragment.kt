@@ -1,23 +1,23 @@
 package com.arrazyfathan.nytimes.presentation.article
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
-import coil.load
 import com.arrazyfathan.nytimes.core.domain.model.Article
-import com.arrazyfathan.nytimes.databinding.FragmentArticleBinding
-import com.arrazyfathan.nytimes.utils.format
+import com.arrazyfathan.nytimes.designsystem.theme.NyTimesTheme
 import com.arrazyfathan.nytimes.utils.fromJson
-import com.arrazyfathan.nytimes.utils.launchUrl
-import com.arrazyfathan.nytimes.utils.toLocalDateTime
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,8 +25,9 @@ class ArticleDetailFragment : Fragment() {
 
     private val viewModel: ArticleDetailViewModel by viewModels()
     private val args: ArticleDetailFragmentArgs by navArgs()
-    private var _binding: FragmentArticleBinding? = null
-    private val binding get() = _binding!!
+    private val article by lazy {
+        fromJson<Article>(args.article)
+    }
 
     companion object {
         private const val TAG = "ArticleFragment"
@@ -37,80 +38,29 @@ class ArticleDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentArticleBinding.inflate(inflater, container, false)
-        return binding.root
+        /*_binding = FragmentArticleBinding.inflate(inflater, container, false)
+        return binding.root*/
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                NyTimesTheme {
+                    ArticleDetailScreen(
+                        viewModel,
+                        article,
+                        modifier = Modifier.background(Color.White).fillMaxSize(),
+                    )
+                }
+            }
+        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val article = fromJson<Article>(args.article)
-        setupView(article)
-
-        /*binding.webviewDetail.apply {
-            webViewClient = WebViewClient()
-            article.url?.let { loadUrl(it) }
-            settings.userAgentString = "Android"
-            settings.javaScriptEnabled = true
-        }
-
-        setupProgressBar()
-
-        if (!article.isSaved) {
-            binding.fabDetail.visibility = View.VISIBLE
-            binding.webviewDetail.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-                if (scrollY > oldScrollY && scrollY > 0) {
-                    binding.fabDetail.hide()
-                }
-                if (scrollY < oldScrollY) {
-                    binding.fabDetail.show()
-                }
-            }
-        } else {
-            binding.fabDetail.visibility = View.INVISIBLE
-        }
-
-        binding.sectionDetail.text =
-            article.subsection?.ifEmpty { article.section }?.replaceFirstChar { it.uppercase() }
-
-        binding.fabDetail.setOnClickListener {
-
-            val savedArticle = Article(
-                id = article.url!!,
-                url = article.url,
-                byline = article.byline,
-                multimedia = article.multimedia,
-                published_date = article.published_date,
-                section = article.section,
-                short_url = article.short_url,
-                subsection = article.subsection,
-                title = article.title,
-                description = article.description,
-                isSaved = true,
-            )
-            viewModel.saveArticle(savedArticle)
-            Snackbar.make(view, "Article saved", Snackbar.LENGTH_SHORT).show()
-        }
-
-        binding.btnShare.setOnClickListener {
-            val shareIntent: Intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    """
-                    ${article.title}
-                    ${article.description}
-                    ${article.short_url}
-                    """.trimIndent()
-                )
-                type = "text/plain"
-            }
-            startActivity(shareIntent)
-        }*/
+        // setupView(article)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
+    /*@RequiresApi(Build.VERSION_CODES.O)
     private fun setupView(article: Article) = with(binding) {
         val formattedDate = article.publishedDate.toLocalDateTime().format("EEEE, MMMM dd yyyy")
         imgDetailNews.load(article.getMainImage()) {
@@ -178,5 +128,5 @@ class ArticleDetailFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
+    }*/
 }

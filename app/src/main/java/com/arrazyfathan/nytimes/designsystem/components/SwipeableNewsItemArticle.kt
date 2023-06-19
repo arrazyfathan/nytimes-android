@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -19,6 +21,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -136,19 +139,26 @@ fun SwipeableNewsItemArticle(
                     .constrainAs(author) {
                         top.linkTo(description.bottom, 16.dp)
                         start.linkTo(chips.start)
-                        end.linkTo(parent.end, 16.dp)
                         bottom.linkTo(parent.bottom, 16.dp)
-                        width = fillToConstraints
                     },
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start,
             ) {
                 Text(
-                    text = "${article.byline} • ",
+                    text = article.byline,
                     fontSize = 10.sp,
+                    overflow = TextOverflow.Ellipsis,
                     textAlign = TextAlign.Start,
+                    maxLines = 1,
                     color = colorResource(id = R.color.text_gray),
                     fontFamily = NotoSansSemiMedium,
+                    modifier = Modifier.fillMaxWidth(0.2f),
+                )
+
+                Text(
+                    text = " • ",
+                    fontSize = 10.sp,
+                    color = colorResource(id = R.color.text_gray),
+                    fontFamily = NotoSansSemiMedium,
+                    modifier = Modifier.padding(horizontal = 8.dp)
                 )
 
                 Text(

@@ -63,6 +63,8 @@ import com.arrazyfathan.nytimes.utils.convertDateToPattern
 fun ArticleDetailScreen(
     viewModel: ArticleDetailViewModel,
     article: Article,
+    onShareClicked: () -> Unit,
+    openLink: () -> Unit,
     modifier: Modifier,
 ) {
     val bool by viewModel.checkArticleIsBookmarked(article.shortUrl).collectAsState(initial = false)
@@ -86,12 +88,15 @@ fun ArticleDetailScreen(
                         .replaceFirstChar { it.uppercase() },
                     fontSize = 12.sp,
                 )
-                IconButton(onClick = { }) {
+                IconButton(
+                    modifier = Modifier
+                        .pressClickEffect(),
+                    onClick = onShareClicked,
+                ) {
                     Icon(
                         painter = painterResource(id = R.drawable.share),
                         contentDescription = null,
                         modifier = Modifier
-                            .pressClickEffect()
                             .size(24.dp),
                     )
                 }
@@ -146,10 +151,11 @@ fun ArticleDetailScreen(
                             )
                         }
                     },
+                    interactionSource = interactionSource,
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .padding(top = 16.dp, end = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(RoundedCornerShape(cornerRadius))
                         .background(Color.White)
                         .size(54.dp),
                 ) {
@@ -252,9 +258,9 @@ fun ArticleDetailScreen(
                 border = BorderStroke(0.5.dp, Color.Black.copy(alpha = 0.3f)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { }
                     .padding(16.dp)
-                    .bounceClick(),
+                    .bounceClick()
+                    .clickable { openLink() },
             ) {
                 ConstraintLayout(
                     modifier = Modifier

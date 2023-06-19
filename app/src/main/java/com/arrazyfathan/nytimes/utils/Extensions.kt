@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.browser.customtabs.CustomTabsIntent
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -42,4 +43,12 @@ inline fun <reified T> fromJson(json: String): T {
 
 fun Any.toJson(): String {
     return Gson().toJson(this)
+}
+
+fun convertDateToPattern(inputDate: String, outputFormat: String): String {
+    val sdfInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
+    val sdfOutput = SimpleDateFormat(outputFormat, Locale.ENGLISH)
+
+    val date = sdfInput.parse(inputDate)
+    return sdfOutput.format(date)
 }

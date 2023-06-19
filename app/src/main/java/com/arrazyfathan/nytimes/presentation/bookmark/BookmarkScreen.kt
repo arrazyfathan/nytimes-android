@@ -28,6 +28,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.designsystem.components.SwipeableNewsItemArticle
+import com.arrazyfathan.nytimes.designsystem.components.bounceClick
+import com.arrazyfathan.nytimes.designsystem.components.pressClickEffect
 import com.arrazyfathan.nytimes.designsystem.theme.DomineBold
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansRegular
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiBold
@@ -136,7 +138,8 @@ fun BookmarkScreen(
                             },
                             modifier = Modifier
                                 .animateItemPlacement()
-                                .fillParentMaxWidth(),
+                                .fillParentMaxWidth()
+                                .bounceClick(),
                         )
                     }
                 }

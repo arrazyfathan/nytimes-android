@@ -4,20 +4,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.arrazyfathan.logging.Logger
 import com.arrazyfathan.nytimes.R
-import com.arrazyfathan.nytimes.core.data.source.Resource
-import com.arrazyfathan.nytimes.core.data.source.remote.network.MessageResult
-import com.arrazyfathan.nytimes.core.utils.toast
+import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.databinding.FragmentTopStoriesBinding
+import com.arrazyfathan.nytimes.designsystem.theme.NyTimesTheme
 import com.arrazyfathan.nytimes.presentation.adapter.TopStoriesAdapter
 import com.arrazyfathan.nytimes.utils.toJson
-import com.google.android.material.chip.Chip
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -40,11 +39,36 @@ class TopStoriesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentTopStoriesBinding.inflate(inflater, container, false)
-        return binding.root
+        /*_binding = FragmentTopStoriesBinding.inflate(inflater, container, false)
+        return binding.root*/
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                NyTimesTheme {
+                    HomeScreen(
+                        viewModel,
+                        onBookmarkClicked = {
+                            findNavController().navigate(
+                                R.id.action_topStoriesFragment_to_bookmarkFragment,
+                            )
+                        },
+                        sections,
+                        onItemSelected = { toDetailArticle(it) },
+                    )
+                }
+            }
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private fun toDetailArticle(article: Article) {
+        val bundle = bundleOf("article" to article.toJson())
+        findNavController().navigate(
+            R.id.action_topStoriesFragment_to_articleDetailFragment,
+            bundle,
+        )
+    }
+
+    /*override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         setupView()
@@ -156,5 +180,5 @@ class TopStoriesFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
+    }*/
 }

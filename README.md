@@ -19,6 +19,8 @@ Go to the [Releases](https://github.com/arrazyfathan/NewYorkTimes-App/releases/d
 ## Tech stack & Open-source libraries
 - Minimum SDK level 21
 - [Kotlin](https://kotlinlang.org/) based, [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
+- [Jetpack Compose](https://developer.android.com/jetpack/compose) - recommended modern toolkit for building native UI.
+- [Coil](https://coil-kt.github.io/coil/) - An image loading library for Android backed by Kotlin Coroutines
 - Jetpack
     - Lifecycle - dispose of observing data when lifecycle state changes.
     - ViewModel - UI related data holder, lifecycle aware.
@@ -31,6 +33,7 @@ Go to the [Releases](https://github.com/arrazyfathan/NewYorkTimes-App/releases/d
 - [TimeAgo](https://github.com/marlonlom/timeago) - Simple java library for displaying dates as relative time ago language.
 - [Lottie](https://github.com/airbnb/lottie-android) - Render After Effects animations natively on Android and iOS, Web, and React Native
 - [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=id) - Implement the swipe-to-refresh UI pattern.
+
 ## API [NY Time API](https://developer.nytimes.com/get-started/)
 ```
 https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey

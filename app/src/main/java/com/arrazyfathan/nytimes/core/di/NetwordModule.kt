@@ -1,6 +1,7 @@
 package com.arrazyfathan.nytimes.core.di
 
 import android.content.Context
+import com.arrazyfathan.nytimes.BuildConfig
 import com.arrazyfathan.nytimes.core.data.source.remote.network.LoggingInterceptor
 import com.arrazyfathan.nytimes.core.data.source.remote.network.NetworkInterceptor
 import com.arrazyfathan.nytimes.core.data.source.remote.network.TopStoriesAPI
@@ -30,7 +31,11 @@ class NetworkModule {
 
     private fun getLoggingInterceptor(): HttpLoggingInterceptor {
         val logger = HttpLoggingInterceptor(LoggingInterceptor())
-        logger.level = HttpLoggingInterceptor.Level.BODY
+        logger.level = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor.Level.BODY
+        } else {
+            HttpLoggingInterceptor.Level.NONE
+        }
         return logger
     }
 

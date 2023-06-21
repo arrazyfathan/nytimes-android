@@ -17,9 +17,17 @@ data class Article(
     var updatedDate: String,
     var uri: String,
     var url: String,
-    var isBookmarked: Boolean = false
+    var isBookmarked: Boolean = false,
 ) {
-    fun getImage() = multimedia.last().url
+    fun getImage(): String? {
+        return try {
+            multimedia.last().url
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+    }
+
     fun getMainImage() = multimedia.first().url
     fun getImageCaption() = multimedia.map { it.caption }.first()
     fun getImageCopyright() = multimedia.map { it.copyright }.first()

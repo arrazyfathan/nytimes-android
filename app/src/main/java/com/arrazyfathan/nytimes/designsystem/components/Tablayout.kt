@@ -1,6 +1,5 @@
 package com.arrazyfathan.nytimes.designsystem.components
 
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,13 +20,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arrazyfathan.nytimes.core.data.source.remote.network.MessageResult
 import com.arrazyfathan.nytimes.core.domain.model.Article
+import com.arrazyfathan.nytimes.designsystem.theme.NotoSansRegular
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiBold
-import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiMedium
 import com.arrazyfathan.nytimes.presentation.topstories.TopStoriesUiState
 import com.arrazyfathan.nytimes.presentation.topstories.sections
 import kotlinx.coroutines.launch
@@ -128,42 +126,51 @@ fun ContentSection(
     Box(
         modifier = Modifier.fillMaxSize().background(Color.White),
     ) {
-        if (state.isLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.align(Alignment.Center),
-            )
-        } else {
-            state.topStories?.let { articles ->
-                if (articles.isNotEmpty()) {
+        when (state) {
+            TopStoriesUiState.Loading -> {
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                )
+            }
+
+            is TopStoriesUiState.Success -> {
+                if (state.topStores.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        items(articles) { article ->
+                        items(state.topStores) { article ->
                             NewsItemArticle(article = article, onItemSelected = onItemSelected)
                         }
                     }
                 } else {
                     Text(
-                        text = "No Article Found",
-                        color = Color.Black,
+                        text = "No Articles Found.",
+                        fontSize = 12.sp,
+                        fontFamily = NotoSansRegular,
                         modifier = Modifier.align(Alignment.Center),
                     )
                 }
             }
-        }
 
-        state.errorMessage?.let { message ->
-            when (message) {
-                MessageResult.NO_CONNECTION -> {
-                    Toast.makeText(
-                        LocalContext.current,
-                        "No Internet connection",
-                        Toast.LENGTH_SHORT,
-                    ).show()
-                }
+            is TopStoriesUiState.Failed -> {
+                when (state.message) {
+                    MessageResult.NO_CONNECTION -> {
+                        Text(
+                            text = "No Internet Connection",
+                            fontSize = 12.sp,
+                            fontFamily = NotoSansRegular,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
 
-                else -> {
-                    Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+                    else -> {
+                        Text(
+                            text = state.message,
+                            fontSize = 12.sp,
+                            fontFamily = NotoSansRegular,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
                 }
             }
         }

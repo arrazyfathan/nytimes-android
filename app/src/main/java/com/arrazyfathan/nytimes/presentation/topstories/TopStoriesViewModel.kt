@@ -17,7 +17,7 @@ class TopStoriesViewModel @Inject constructor(
     private val topStoriesUseCase: TopStoriesUseCase,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(TopStoriesUiState())
+    private val _state = MutableStateFlow<TopStoriesUiState>(TopStoriesUiState.Loading)
     val state: StateFlow<TopStoriesUiState> get() = _state
 
     private val _topStories = MutableLiveData<Resource<List<Article>>>()
@@ -32,28 +32,24 @@ class TopStoriesViewModel @Inject constructor(
             topStoriesUseCase.getTopStories(section).collectLatest { resource ->
                 when (resource) {
                     is Resource.Loading -> {
-                        _state.update { state ->
-                            state.copy(
-                                isLoading = true,
-                            )
+                        _state.update {
+                            TopStoriesUiState.Loading
                         }
                     }
 
                     is Resource.Success -> {
-                        _state.update { state ->
-                            state.copy(
-                                isLoading = false,
-                                topStories = resource.data,
-                            )
+                        resource.data?.let { articles ->
+                            _state.update {
+                                TopStoriesUiState.Success(articles.filter { it.title.isNotBlank() })
+                            }
                         }
                     }
 
                     is Resource.Error -> {
-                        _state.update { state ->
-                            state.copy(
-                                isLoading = false,
-                                errorMessage = resource.message,
-                            )
+                        resource.message?.let { message ->
+                            _state.update {
+                                TopStoriesUiState.Failed(message)
+                            }
                         }
                     }
                 }

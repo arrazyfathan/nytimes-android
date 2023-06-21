@@ -64,7 +64,7 @@ fun ArticleEntity.mapToDomain(): Article {
         itemType = this.itemType,
         kicker = this.kicker,
         materialTypeFacet = this.materialTypeFacet,
-        multimedia = this.multimedia!!,
+        multimedia = this.multimedia,
         publishedDate = this.publishedDate,
         section = this.section,
         shortUrl = this.shortUrl,

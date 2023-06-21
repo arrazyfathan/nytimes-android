@@ -18,7 +18,7 @@ data class ArticleEntity(
     var itemType: String = "",
     var kicker: String = "",
     var materialTypeFacet: String = "",
-    var multimedia: List<Multimedia> = listOf(),
+    var multimedia: List<Multimedia> = emptyList(),
     var publishedDate: String = "",
     var section: String = "",
     var shortUrl: String = "",

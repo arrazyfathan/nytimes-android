@@ -16,7 +16,7 @@ data class ArticleDto(
     @SerializedName("material_type_facet")
     var materialTypeFacet: String? = "",
     @SerializedName("multimedia")
-    var multimediaDto: List<MultimediaDto>? = listOf(),
+    var multimediaDto: List<MultimediaDto>? = emptyList(),
     @SerializedName("published_date")
     var publishedDate: String? = "",
     @SerializedName("section")

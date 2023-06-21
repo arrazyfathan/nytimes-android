@@ -43,7 +43,7 @@ class TopStoriesAdapter(val onClick: (Article) -> Unit) :
 
         holder.binding.apply {
             Glide.with(this.root)
-                .load(if (article.multimedia.isEmpty()) R.drawable.placeholder else article.getImage())
+                .load(if (article.multimedia?.isEmpty() == true) R.drawable.placeholder else article.getImage())
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imageViewArticle)

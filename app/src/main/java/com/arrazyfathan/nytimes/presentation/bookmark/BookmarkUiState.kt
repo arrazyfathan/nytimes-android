@@ -8,5 +8,5 @@ import com.arrazyfathan.nytimes.core.domain.model.Article
 
 data class BookmarkUiState(
     val articles: List<Article> = emptyList(),
-    val selectedArticle: Article? = null
+    val selectedArticle: Article? = null,
 )

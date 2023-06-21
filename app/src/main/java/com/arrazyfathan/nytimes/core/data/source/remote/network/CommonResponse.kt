@@ -11,5 +11,5 @@ open class CommonResponse(
     @SerializedName("message")
     var message: String? = "Server Error",
     @SerializedName("error")
-    val error: MutableList<String>? = ArrayList()
+    val error: MutableList<String>? = ArrayList(),
 )

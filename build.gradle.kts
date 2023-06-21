@@ -1,3 +1,7 @@
+import com.android.build.gradle.AppPlugin
+import com.android.build.gradle.LibraryPlugin
+import com.diffplug.gradle.spotless.SpotlessExtension
+import com.diffplug.gradle.spotless.SpotlessPlugin
 import dev.iurysouza.modulegraph.Orientation
 import dev.iurysouza.modulegraph.Theme
 
@@ -20,7 +24,25 @@ plugins {
     id("com.android.library") version "7.2.0" apply false
     kotlin("android") version "1.8.0" apply false
     id("dev.iurysouza.modulegraph") version "0.3.0"
-    id("org.jlleitschuh.gradle.ktlint") version "11.4.0"
+    id("com.diffplug.spotless") version "6.17.0" apply false
+}
+
+val ktlintVersion = "0.49.1"
+
+subprojects {
+    plugins.matching { anyPlugin -> anyPlugin is AppPlugin || anyPlugin is LibraryPlugin }
+        .whenPluginAdded {
+            apply<SpotlessPlugin>()
+            extensions.configure<SpotlessExtension> {
+                kotlin {
+                    target("**/*.kt")
+                    targetExclude("$buildDir/**/*.kt")
+                    ktlint().apply {
+                        setEditorConfigPath("${project.rootDir}/spotless/.editorconfig")
+                    }
+                }
+            }
+        }
 }
 
 moduleGraphConfig {

@@ -49,6 +49,6 @@ fun convertDateToPattern(inputDate: String, outputFormat: String): String {
     val sdfInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
     val sdfOutput = SimpleDateFormat(outputFormat, Locale.ENGLISH)
 
-    val date = sdfInput.parse(inputDate)
+    val date = sdfInput.parse(inputDate) ?: return inputDate
     return sdfOutput.format(date)
 }

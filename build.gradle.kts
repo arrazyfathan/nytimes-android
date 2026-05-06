@@ -1,28 +1,26 @@
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.LibraryPlugin
 import com.diffplug.gradle.spotless.SpotlessExtension
 import com.diffplug.gradle.spotless.SpotlessPlugin
 import dev.iurysouza.modulegraph.Orientation
 import dev.iurysouza.modulegraph.Theme
 
 buildscript {
-    val kotlinVersion = "1.8.0"
     repositories {
+        google()
         mavenCentral()
     }
     dependencies {
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.5.3")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("com.google.gms:google-services:4.3.15")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:2.9.4")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.44")
+        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.9.7")
+        classpath("com.google.gms:google-services:4.4.4")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.6")
+        classpath("com.google.dagger:hilt-android-gradle-plugin:2.59.2")
     }
 }
 
 plugins {
-    id("com.android.application") version "7.2.0" apply false
-    id("com.android.library") version "7.2.0" apply false
-    kotlin("android") version "1.8.0" apply false
+    id("com.android.application") version "9.1.1" apply false
+    id("com.android.library") version "9.1.1" apply false
+    id("com.android.legacy-kapt") version "9.1.1" apply false
+    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
     id("dev.iurysouza.modulegraph") version "0.3.0"
     id("com.diffplug.spotless") version "6.17.0" apply false
 }
@@ -30,19 +28,25 @@ plugins {
 val ktlintVersion = "0.49.1"
 
 subprojects {
-    plugins.matching { anyPlugin -> anyPlugin is AppPlugin || anyPlugin is LibraryPlugin }
-        .whenPluginAdded {
-            apply<SpotlessPlugin>()
-            extensions.configure<SpotlessExtension> {
-                kotlin {
-                    target("**/*.kt")
-                    targetExclude("$buildDir/**/*.kt")
-                    ktlint().apply {
-                        setEditorConfigPath("${project.rootDir}/spotless/.editorconfig")
-                    }
+    fun configureSpotless() {
+        apply<SpotlessPlugin>()
+        extensions.configure<SpotlessExtension> {
+            kotlin {
+                target("**/*.kt")
+                targetExclude("**/build/**/*.kt")
+                ktlint().apply {
+                    setEditorConfigPath("${project.rootDir}/spotless/.editorconfig")
                 }
             }
         }
+    }
+
+    pluginManager.withPlugin("com.android.application") {
+        configureSpotless()
+    }
+    pluginManager.withPlugin("com.android.library") {
+        configureSpotless()
+    }
 }
 
 moduleGraphConfig {
@@ -54,6 +58,6 @@ moduleGraphConfig {
 
 tasks {
     register("clean", Delete::class) {
-        delete(rootProject.buildDir)
+        delete(rootProject.layout.buildDirectory)
     }
 }

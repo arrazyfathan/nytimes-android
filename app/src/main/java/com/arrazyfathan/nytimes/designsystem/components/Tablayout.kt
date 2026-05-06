@@ -93,7 +93,6 @@ fun TabsContent(
 ) {
     HorizontalPager(
         state = pagerState,
-        pageCount = sections.size,
     ) { page ->
         when (page) {
             0 -> ContentSection(pagerState = pagerState, state, onItemSelected)

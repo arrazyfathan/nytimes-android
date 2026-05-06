@@ -1,7 +1,7 @@
 package com.arrazyfathan.nytimes.designsystem.theme
 
 import androidx.compose.runtime.Composable
-import com.google.accompanist.themeadapter.material.MdcTheme
+import androidx.compose.material.MaterialTheme
 
 /**
  * Created by Ar Razy Fathan Rabbani on 15/06/23.
@@ -11,7 +11,5 @@ import com.google.accompanist.themeadapter.material.MdcTheme
 fun NyTimesTheme(
     content: @Composable () -> Unit,
 ) {
-    MdcTheme(
-        content = content,
-    )
+    MaterialTheme(content = content)
 }

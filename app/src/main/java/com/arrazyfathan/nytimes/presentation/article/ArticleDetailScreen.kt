@@ -9,12 +9,16 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -53,12 +57,14 @@ import com.arrazyfathan.nytimes.designsystem.theme.DomineRegular
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansRegular
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiBold
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiMedium
+import com.arrazyfathan.nytimes.designsystem.theme.SyncStatusBarWithAppBar
 import com.arrazyfathan.nytimes.utils.convertDateToPattern
 
 /**
  * Created by Ar Razy Fathan Rabbani on 18/06/23.
  */
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ArticleDetailScreen(
     viewModel: ArticleDetailViewModel,
@@ -67,6 +73,10 @@ fun ArticleDetailScreen(
     openLink: () -> Unit,
     modifier: Modifier,
 ) {
+    val appBarColor = Color.White
+
+    SyncStatusBarWithAppBar(appBarColor)
+
     val bool by viewModel.checkArticleIsBookmarked(article.shortUrl).collectAsState(initial = false)
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
@@ -76,10 +86,17 @@ fun ArticleDetailScreen(
 
     Scaffold { paddingValues ->
         Column(
-            modifier = modifier.verticalScroll(rememberScrollState()).padding(paddingValues),
+            modifier = modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .navigationBarsPadding()
+                .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .statusBarsPadding()
+                    .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -98,6 +115,7 @@ fun ArticleDetailScreen(
                         contentDescription = null,
                         modifier = Modifier
                             .size(24.dp),
+                        tint = Color.Black,
                     )
                 }
             }

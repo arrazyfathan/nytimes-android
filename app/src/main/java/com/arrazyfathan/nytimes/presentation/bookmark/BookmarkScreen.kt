@@ -3,8 +3,12 @@ package com.arrazyfathan.nytimes.presentation.bookmark
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -32,18 +36,23 @@ import com.arrazyfathan.nytimes.designsystem.components.bounceClick
 import com.arrazyfathan.nytimes.designsystem.theme.DomineBold
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansRegular
 import com.arrazyfathan.nytimes.designsystem.theme.NotoSansSemiBold
+import com.arrazyfathan.nytimes.designsystem.theme.SyncStatusBarWithAppBar
 
 /**
  * Created by Ar Razy Fathan Rabbani on 15/06/23.
  */
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun BookmarkScreen(
     viewModel: BookmarkViewModel,
     modifier: Modifier = Modifier,
     onClicked: (Article) -> Unit,
 ) {
+    val appBarColor = Color.White
+
+    SyncStatusBarWithAppBar(appBarColor)
+
     val state by viewModel.state.collectAsState()
     val scrollState = rememberLazyListState()
     var showDialog by remember { mutableStateOf(false) }
@@ -58,7 +67,8 @@ fun BookmarkScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                backgroundColor = Color.White,
+                modifier = Modifier.statusBarsPadding(),
+                backgroundColor = appBarColor,
                 elevation = if (firstItemVisible) 0.dp else 4.dp,
             ) {
                 Text(
@@ -107,7 +117,10 @@ fun BookmarkScreen(
         }
 
         Column(
-            modifier = modifier,
+            modifier = modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .navigationBarsPadding(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -121,7 +134,6 @@ fun BookmarkScreen(
                 )
             } else {
                 LazyColumn(
-                    contentPadding = paddingValues,
                     modifier = Modifier
                         .fillMaxSize()
                         .weight(1f),
@@ -136,7 +148,7 @@ fun BookmarkScreen(
                                 showDialog = !showDialog
                             },
                             modifier = Modifier
-                                .animateItemPlacement()
+                                .animateItem()
                                 .fillParentMaxWidth()
                                 .bounceClick(),
                         )

@@ -11,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -70,6 +69,6 @@ class ArticleDetailFragment : Fragment() {
             )
             type = "text/plain"
         }
-        ContextCompat.startActivity(requireContext(), shareIntent, null)
+        startActivity(shareIntent)
     }
 }

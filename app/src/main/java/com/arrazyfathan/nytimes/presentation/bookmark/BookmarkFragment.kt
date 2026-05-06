@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -46,7 +45,9 @@ class BookmarkFragment : Fragment() {
     }
 
     private fun navigateToDetail(article: Article) {
-        val bundle = bundleOf("article" to article.toJson())
+        val bundle = Bundle().apply {
+            putString("article", article.toJson())
+        }
         findNavController().navigate(
             R.id.action_bookmarkFragment_to_articleDetailFragment,
             bundle,

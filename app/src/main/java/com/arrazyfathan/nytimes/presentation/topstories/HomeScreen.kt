@@ -2,11 +2,15 @@ package com.arrazyfathan.nytimes.presentation.topstories
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -28,13 +32,14 @@ import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.designsystem.components.TabLayout
 import com.arrazyfathan.nytimes.designsystem.components.pressClickEffect
 import com.arrazyfathan.nytimes.designsystem.theme.DomineBold
+import com.arrazyfathan.nytimes.designsystem.theme.SyncStatusBarWithAppBar
 import kotlinx.coroutines.flow.collect
 
 /**
  * Created by Ar Razy Fathan Rabbani on 19/06/23.
  */
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
     viewModel: TopStoriesViewModel,
@@ -42,7 +47,14 @@ fun HomeScreen(
     sections: List<String>,
     onItemSelected: (Article) -> Unit,
 ) {
-    val pagerState = rememberPagerState(initialPage = 0)
+    val appBarColor = Color.White
+
+    SyncStatusBarWithAppBar(appBarColor)
+
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { sections.size },
+    )
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -72,8 +84,9 @@ fun HomeScreen(
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = Modifier.statusBarsPadding(),
                 contentPadding = PaddingValues(16.dp),
-                backgroundColor = Color.White,
+                backgroundColor = appBarColor,
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -102,7 +115,10 @@ fun HomeScreen(
         },
     ) { paddingValues ->
         TabLayout(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .consumeWindowInsets(paddingValues)
+                .navigationBarsPadding(),
             pagerState,
             state,
             onItemSelected,

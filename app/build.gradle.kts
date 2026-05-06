@@ -4,12 +4,12 @@ import java.util.Properties
 
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
     id("androidx.navigation.safeargs.kotlin")
-    kotlin("kapt")
+    id("com.android.legacy-kapt")
+    id("org.jetbrains.kotlin.plugin.compose")
     id("com.google.gms.google-services")
     id("com.google.firebase.crashlytics")
-    id("dagger.hilt.android.plugin")
+    id("com.google.dagger.hilt.android")
 }
 
 val localPropsFile = rootProject.file("local.properties")
@@ -20,6 +20,7 @@ val apiKey = localProps.getProperty("API_KEY")
 val keystoreFile = rootProject.file("nytimes-keystore")
 
 android {
+    namespace = "com.arrazyfathan.nytimes"
     compileSdk = DefaultConfig.compileSdkVersion
 
     defaultConfig {
@@ -47,7 +48,7 @@ android {
             signingConfig = signingConfigs.getByName("release")
             isDebuggable = false
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
         /* release {
                     minifyEnabled false
@@ -59,27 +60,26 @@ android {
         debug {
             isMinifyEnabled = false
             isDebuggable = true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.1"
     }
     lint {
         checkReleaseBuilds = false
         abortOnError = false
     }
+}
+
+kapt {
+    correctErrorTypes = true
 }
 
 dependencies {
@@ -93,14 +93,13 @@ dependencies {
     implementation(Dependencies.composeRuntime)
     implementation(Dependencies.composeUI)
     implementation(Dependencies.composeFoundation)
-    implementation("androidx.compose.animation:animation:1.4.3")
+    implementation("androidx.compose.animation:animation")
     implementation(Dependencies.composeFoundationLayout)
     implementation(Dependencies.composeMaterial)
     implementation(Dependencies.composeConstraintLayout)
     implementation(Dependencies.composeLiveData)
     implementation(Dependencies.composePreview)
     debugImplementation(Dependencies.composeTooling)
-    implementation(Dependencies.accompanistThemeAdapter)
     implementation(Dependencies.composeCoil)
     implementation(Dependencies.swipeAction)
 

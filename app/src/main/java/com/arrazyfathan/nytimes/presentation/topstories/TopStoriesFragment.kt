@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -61,7 +60,9 @@ class TopStoriesFragment : Fragment() {
     }
 
     private fun toDetailArticle(article: Article) {
-        val bundle = bundleOf("article" to article.toJson())
+        val bundle = Bundle().apply {
+            putString("article", article.toJson())
+        }
         findNavController().navigate(
             R.id.action_topStoriesFragment_to_articleDetailFragment,
             bundle,

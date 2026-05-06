@@ -50,7 +50,6 @@ object Dependencies {
     val composeLiveData by lazy { "androidx.compose.runtime:runtime-livedata" }
     val composePreview by lazy { "androidx.compose.ui:ui-tooling-preview" }
     val composeTooling by lazy { "androidx.compose.ui:ui-tooling" }
-    val accompanistThemeAdapter by lazy { "com.google.accompanist:accompanist-themeadapter-material:${Version.accompanistThemeAdapter}" }
     val composeCoil by lazy { "io.coil-kt:coil-compose:${Version.coilCompose}" }
     val swipeAction by lazy { "me.saket.swipe:swipe:${Version.swipeActionCompose}" }
 }

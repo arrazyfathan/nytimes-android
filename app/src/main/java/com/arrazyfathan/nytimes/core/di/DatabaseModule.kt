@@ -25,7 +25,7 @@ class DatabaseModule {
         context,
         NytDatabase::class.java,
         "nytimes.db",
-    ).fallbackToDestructiveMigration().build()
+    ).fallbackToDestructiveMigration(dropAllTables = true).build()
 
     @Provides
     fun provideNtyDao(database: NytDatabase): NytDao = database.nytDao()

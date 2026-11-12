@@ -7,6 +7,7 @@ import com.arrazyfathan.nytimes.core.data.source.remote.network.NetworkIntercept
 import com.arrazyfathan.nytimes.core.data.source.remote.network.TopStoriesAPI
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import com.google.gson.Strictness
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,7 +52,7 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideGson(): Gson = GsonBuilder().setLenient().create()
+    fun provideGson(): Gson = GsonBuilder().setStrictness(Strictness.LENIENT).create()
 
     @Provides
     fun provideTopStoriesApi(client: OkHttpClient, gson: Gson): TopStoriesAPI {

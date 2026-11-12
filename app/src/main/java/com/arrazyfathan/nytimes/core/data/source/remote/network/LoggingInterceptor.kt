@@ -15,7 +15,7 @@ class LoggingInterceptor : HttpLoggingInterceptor.Logger {
         if (message.startsWith("{") || message.startsWith("[")) {
             try {
                 val prettyPrintJson = GsonBuilder().setPrettyPrinting()
-                    .create().toJson(JsonParser().parse(message))
+                    .create().toJson(JsonParser.parseString(message))
                 d("ApiLogger : $prettyPrintJson")
             } catch (m: JsonSyntaxException) {
                 d("ApiLogger : $message")

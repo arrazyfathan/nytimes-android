@@ -5,41 +5,61 @@ This project is an Android application that demonstrates the effective implement
 </p>
 
 <p align="center">
-  <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
-  <a href="https://android-arsenal.com/api?level=21"><img alt="API" src="https://img.shields.io/badge/API-21%2B-brightgreen.svg?style=flat"/></a>
+  <a href="https://opensource.org/licenses/MIT"><img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg"/></a>
+  <a href="https://developer.android.com/about/versions/nougat"><img alt="API" src="https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat"/></a>
+  <img alt="Java 17" src="https://img.shields.io/badge/Java-17-orange.svg"/>
 </p>
 
 <p align="center">
 <img src="media/screenshot.png"/>
 </p>
 
-## Download
-Go to the [Releases](https://github.com/arrazyfathan/NewYorkTimes-App/releases/download/v1.0/nytimes-release.apk) to download the latest APK.
+## Tech Stack & Architecture
 
-## Tech stack & Open-source libraries
-- Minimum SDK level 21
-- [Kotlin](https://kotlinlang.org/) based, [Coroutines](https://github.com/Kotlin/kotlinx.coroutines)
-- [Jetpack Compose](https://developer.android.com/jetpack/compose) - recommended modern toolkit for building native UI.
-- [Coil](https://coil-kt.github.io/coil/) - An image loading library for Android backed by Kotlin Coroutines
-- Jetpack
-    - Lifecycle - dispose of observing data when lifecycle state changes.
-    - ViewModel - UI related data holder, lifecycle aware.
-    - Room Persistence - construct the database using the abstract layer.
-- Architecture
-    - MVVM Architecture
-    - Repository pattern
-- [Material-Components](https://github.com/material-components/material-components-android) - Material design components for building ripple animation, and CardView.
-- [Glide](https://github.com/bumptech/glide) - Load image and caching image
-- [TimeAgo](https://github.com/marlonlom/timeago) - Simple java library for displaying dates as relative time ago language.
-- [Lottie](https://github.com/airbnb/lottie-android) - Render After Effects animations natively on Android and iOS, Web, and React Native
-- [Swiperefreshlayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout?hl=id) - Implement the swipe-to-refresh UI pattern.
+- **Minimum SDK Level**: 24 (Android 7.0+)
+- **Compile / Target SDK**: 37
+- **Language & Runtime**: [Kotlin](https://kotlinlang.org/) with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) & Flow
+- **Build System & Tooling**:
+  - Gradle with Java 17 toolchain
+  - **Gradle Version Catalog** (`gradle/libs.versions.toml`) for centralized dependency management
+  - **Build Logic** (`build-logic`) convention plugins (`nytimes.android.application`, `nytimes.android.library`)
+  - [Spotless](https://github.com/diffplug/spotless) with ktlint for automated code formatting
+- **UI & Presentation**:
+  - [Jetpack Compose](https://developer.android.com/jetpack/compose) & ViewBinding
+  - [Material Components](https://github.com/material-components/material-components-android)
+  - [Glide](https://github.com/bumptech/glide) & [Coil](https://coil-kt.github.io/coil/) for image loading and caching
+  - [Lottie](https://github.com/airbnb/lottie-android) for native animations
+  - [SwipeRefreshLayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout)
+- **Architecture**:
+  - Clean Architecture (Domain, Data, Presentation layers)
+  - MVVM Architecture with StateFlow / LiveData
+  - Repository Pattern
+- **Jetpack Libraries**:
+  - [Navigation Component](https://developer.android.com/guide/navigation) with Safe Args
+  - [Room Persistence](https://developer.android.com/training/data-storage/room) for local caching
+  - [Lifecycle & ViewModel](https://developer.android.com/topic/libraries/architecture)
+- **Dependency Injection**:
+  - [Dagger Hilt](https://dagger.dev/hilt/) for dependency injection
+- **Networking & API**:
+  - [Retrofit](https://square.github.io/retrofit/) & [OkHttp](https://square.github.io/okhttp/)
+  - [Gson](https://github.com/google/gson) for JSON serialization
+  - Custom logging interceptor with [Timber](https://github.com/JakeWharton/timber)
+- **Monitoring & Analytics**:
+  - [Firebase Crashlytics](https://firebase.google.com/products/crashlytics) & [Firebase Analytics](https://firebase.google.com/products/analytics) (via Firebase BoM)
 
-## API [NY Time API](https://developer.nytimes.com/get-started/)
+## Project Structure
+
 ```
-https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
+nytimes-android/
+├── app/                  # Main application module (UI, DI, domain, data)
+├── logging/              # Reusable logger module with Timber wrapper
+├── build-logic/          # Gradle composite build with convention plugins
+│   └── convention/       # Convention plugins for Android application and library modules
+└── gradle/
+    └── libs.versions.toml # Gradle Version Catalog
 ```
 
-## Dependency Diagram
+## Module Dependency Graph
 
 ```mermaid
 %%{
@@ -49,12 +69,14 @@ https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
 }%%
 
 graph LR
+  app --> logging
+```
 
-  app --> logging
-  app --> logging
-  app --> logging
-  app --> logging
+## API
 
+Uses the [New York Times Top Stories API](https://developer.nytimes.com/get-started/):
+```
+https://api.nytimes.com/svc/topstories/v2/home.json?api-key=yourkey
 ```
 
 ## Demo App

@@ -3,29 +3,20 @@ import com.diffplug.gradle.spotless.SpotlessPlugin
 import dev.iurysouza.modulegraph.Orientation
 import dev.iurysouza.modulegraph.Theme
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("androidx.navigation:navigation-safe-args-gradle-plugin:2.9.7")
-        classpath("com.google.gms:google-services:4.4.4")
-        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.6")
-        classpath("com.google.dagger:hilt-android-gradle-plugin:2.59.2")
-    }
-}
-
 plugins {
-    id("com.android.application") version "9.1.1" apply false
-    id("com.android.library") version "9.1.1" apply false
-    id("com.android.legacy-kapt") version "9.1.1" apply false
-    id("org.jetbrains.kotlin.plugin.compose") version "2.2.10" apply false
-    id("dev.iurysouza.modulegraph") version "0.3.0"
-    id("com.diffplug.spotless") version "6.17.0" apply false
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.android.legacy.kapt) apply false
+    alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.modulegraph)
+    alias(libs.plugins.spotless) apply false
+    alias(libs.plugins.navigation.safeargs.kotlin) apply false
+    alias(libs.plugins.google.services) apply false
+    alias(libs.plugins.firebase.crashlytics) apply false
+    alias(libs.plugins.hilt.android) apply false
 }
 
-val ktlintVersion = "0.49.1"
+val ktlintVersion = libs.versions.ktlint.get()
 
 subprojects {
     fun configureSpotless() {

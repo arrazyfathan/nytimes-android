@@ -1,5 +1,5 @@
 plugins {
-    id("com.android.library")
+    alias(libs.plugins.nytimes.android.library)
 }
 
 android {
@@ -14,5 +14,5 @@ android {
 }
 
 dependencies {
-    implementation(Dependencies.timber)
+    implementation(libs.timber)
 }

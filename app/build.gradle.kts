@@ -3,13 +3,13 @@
 import java.util.Properties
 
 plugins {
-    id("com.android.application")
-    id("androidx.navigation.safeargs.kotlin")
-    id("com.android.legacy-kapt")
-    id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.gms.google-services")
-    id("com.google.firebase.crashlytics")
-    id("com.google.dagger.hilt.android")
+    alias(libs.plugins.nytimes.android.application)
+    alias(libs.plugins.navigation.safeargs.kotlin)
+    alias(libs.plugins.android.legacy.kapt)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
+    alias(libs.plugins.hilt.android)
 }
 
 val localPropsFile = rootProject.file("local.properties")
@@ -50,12 +50,6 @@ android {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
-        /* release {
-                    minifyEnabled false
-                    debuggable false
-                    signingConfig signingConfigs.release
-                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-                }*/
 
         debug {
             isMinifyEnabled = false
@@ -87,86 +81,86 @@ dependencies {
     implementation(project(":logging"))
 
     // Compose
-    val composeBom = platform(Dependencies.composeBom)
+    val composeBom = platform(libs.compose.bom)
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation(Dependencies.composeRuntime)
-    implementation(Dependencies.composeUI)
-    implementation(Dependencies.composeFoundation)
-    implementation("androidx.compose.animation:animation")
-    implementation(Dependencies.composeFoundationLayout)
-    implementation(Dependencies.composeMaterial)
-    implementation(Dependencies.composeConstraintLayout)
-    implementation(Dependencies.composeLiveData)
-    implementation(Dependencies.composePreview)
-    debugImplementation(Dependencies.composeTooling)
-    implementation(Dependencies.composeCoil)
-    implementation(Dependencies.swipeAction)
+    implementation(libs.compose.runtime)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.animation)
+    implementation(libs.compose.foundation.layout)
+    implementation(libs.compose.material)
+    implementation(libs.compose.constraintlayout)
+    implementation(libs.compose.livedata)
+    implementation(libs.compose.ui.tooling.preview)
+    debugImplementation(libs.compose.ui.tooling)
+    implementation(libs.coil.compose)
+    implementation(libs.swipe.action)
 
-    implementation(Dependencies.coreKtx)
-    implementation(Dependencies.appCompat)
-    implementation(Dependencies.material)
-    implementation(Dependencies.constraintLayout)
-    testImplementation(Dependencies.jUnit)
-    androidTestImplementation(Dependencies.androidJunit)
-    androidTestImplementation(Dependencies.espresso)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.material)
+    implementation(libs.androidx.constraintlayout)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.test.junit)
+    androidTestImplementation(libs.androidx.test.espresso.core)
 
     // Retrofit
-    implementation(Dependencies.retrofit)
-    implementation(Dependencies.retrofitConverterGson)
-    implementation(Dependencies.retrofitAdapterRxJava2)
-    implementation(Dependencies.logginInterceptor)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.retrofit.adapter.rxjava2)
+    implementation(libs.okhttp.logging.interceptor)
 
     // Glide
-    implementation(Dependencies.glide)
+    implementation(libs.glide)
 
     // Navigation Component
-    implementation(Dependencies.navigationFragmentKtx)
-    implementation(Dependencies.navigationUiKtx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
 
     // room
-    implementation(Dependencies.room)
-    kapt(Dependencies.roomCompiler)
-    implementation(Dependencies.roomKtx)
+    implementation(libs.androidx.room.runtime)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
-    implementation(Dependencies.hilt)
-    kapt(Dependencies.hiltCompiler)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-    implementation(Dependencies.activityKtx)
-    implementation(Dependencies.fragmentKtx)
+    implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.fragment.ktx)
 
     // Lifecycle components
-    implementation(Dependencies.lifecycleExtension)
-    implementation(Dependencies.viewModelKtx)
-    implementation(Dependencies.liveDataKtx)
-    implementation(Dependencies.lifecycleRuntime)
+    implementation(libs.androidx.lifecycle.extensions)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // Coroutines
-    implementation(Dependencies.coroutinesCore)
-    implementation(Dependencies.coroutinesAndroid)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
     // Lottie
-    implementation(Dependencies.lottie)
+    implementation(libs.lottie)
 
     // Time Ago
-    implementation(Dependencies.timeAgo)
+    implementation(libs.timeago)
 
     // Swipe Refresh Layout
-    implementation(Dependencies.swipeRefreshLayout)
+    implementation(libs.androidx.swiperefreshlayout)
 
     // Firebase
-    implementation(platform(Dependencies.firebaseBom))
+    implementation(platform(libs.firebase.bom))
 
     // Crashlytics
-    implementation(Dependencies.crashlytics)
-    implementation(Dependencies.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 
     // Sticky View
-    implementation(Dependencies.stickyView)
+    implementation(libs.sticky.scrollview)
 
     // Coil Image loader
-    implementation(Dependencies.coil)
+    implementation(libs.coil)
 
     // Custom Tab Chrome
-    implementation(Dependencies.androidBrowser)
+    implementation(libs.androidx.browser)
 }

@@ -70,6 +70,11 @@ android {
         checkReleaseBuilds = false
         abortOnError = false
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 kapt {

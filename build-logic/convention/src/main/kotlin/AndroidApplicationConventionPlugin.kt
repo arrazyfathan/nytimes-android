@@ -1,4 +1,6 @@
 import com.android.build.api.dsl.ApplicationExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.HasUnitTestBuilder
 import org.gradle.api.JavaVersion
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -27,6 +29,18 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
                 compileOptions {
                     sourceCompatibility = JavaVersion.VERSION_17
                     targetCompatibility = JavaVersion.VERSION_17
+                }
+
+                testOptions {
+                    unitTests {
+                        isIncludeAndroidResources = true
+                    }
+                }
+            }
+
+            extensions.configure<ApplicationAndroidComponentsExtension> {
+                beforeVariants { variant ->
+                    (variant as? HasUnitTestBuilder)?.enableUnitTest = true
                 }
             }
         }

@@ -14,13 +14,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.presentation.article.ArticleDetailScreen
-import com.arrazyfathan.nytimes.presentation.article.ArticleDetailViewModel
 import com.arrazyfathan.nytimes.presentation.bookmark.BookmarkScreen
 import com.arrazyfathan.nytimes.presentation.bookmark.BookmarkViewModel
 import com.arrazyfathan.nytimes.presentation.topstories.HomeScreen
@@ -32,11 +33,13 @@ private const val TRANSITION_DURATION_MS = 300
 @Composable
 fun NyTimesNavDisplay(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(TopStoriesRoute)
+    val listDetailStrategy = rememberListDetailSceneStrategy<NavKey>()
     val context = LocalContext.current
 
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        sceneStrategies = listOf(listDetailStrategy),
         modifier = modifier,
         entryDecorators =
             listOf(
@@ -75,34 +78,40 @@ fun NyTimesNavDisplay(modifier: Modifier = Modifier) {
         },
         entryProvider =
             entryProvider {
-                entry<TopStoriesRoute> {
+                entry<TopStoriesRoute>(
+                    metadata = ListDetailScene.listPane(),
+                ) {
                     HomeScreen(
                         onBookmarkClicked = {
                             backStack.add(BookmarkRoute)
                         },
                         sections = sections,
                         onItemSelected = { article ->
-                            backStack.add(ArticleDetailRoute(article))
+                            backStack.addDetail(ArticleDetailRoute(article))
                         },
                     )
                 }
-                entry<BookmarkRoute> {
+                entry<BookmarkRoute>(
+                    metadata = ListDetailScene.listPane(),
+                ) {
                     val viewModel: BookmarkViewModel = hiltViewModel()
                     BookmarkScreen(
                         viewModel = viewModel,
                         modifier = Modifier.background(Color.White).fillMaxSize(),
                         onClicked = { article ->
-                            backStack.add(ArticleDetailRoute(article))
+                            backStack.addDetail(ArticleDetailRoute(article))
                         },
                     )
                 }
-                entry<ArticleDetailRoute> { key ->
-                    val viewModel: ArticleDetailViewModel = hiltViewModel()
+                entry<ArticleDetailRoute>(
+                    metadata = ListDetailScene.detailPane(),
+                ) { key ->
                     ArticleDetailScreen(
-                        viewModel = viewModel,
                         article = key.article,
                         onShareClicked = { context.shareArticle(key.article) },
-                        openLink = { context.launchUrl(key.article.shortUrl) },
+                        openLink = {
+                            context.launchUrl(key.article.url.ifBlank { key.article.shortUrl })
+                        },
                         modifier = Modifier.background(Color.White).fillMaxSize(),
                     )
                 }
@@ -110,7 +119,13 @@ fun NyTimesNavDisplay(modifier: Modifier = Modifier) {
     )
 }
 
+private fun NavBackStack<NavKey>.addDetail(detailRoute: ArticleDetailRoute) {
+    removeIf { it is ArticleDetailRoute }
+    add(detailRoute)
+}
+
 private fun Context.shareArticle(article: Article) {
+    val articleLink = article.shortUrl.ifBlank { article.url }
     val shareIntent =
         Intent().apply {
             action = Intent.ACTION_SEND
@@ -119,7 +134,7 @@ private fun Context.shareArticle(article: Article) {
                 """
                 ${article.title}
                 ${article.description}
-                ${article.shortUrl}
+                $articleLink
                 """.trimIndent(),
             )
             type = "text/plain"

@@ -20,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -83,19 +85,29 @@ fun NewsItemArticle(
                 Text(
                     text = article.title,
                     fontSize = 16.sp,
+                    lineHeight = 20.sp,
                     color = Color.Black,
                     fontFamily = DomineBold,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
+                    style =
+                        TextStyle(
+                            platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        ),
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = article.description,
                     fontSize = 12.sp,
+                    lineHeight = 16.sp,
                     color = Color.Black,
                     fontFamily = NotoSansRegular,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis,
+                    style =
+                        TextStyle(
+                            platformStyle = PlatformTextStyle(includeFontPadding = false),
+                        ),
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))

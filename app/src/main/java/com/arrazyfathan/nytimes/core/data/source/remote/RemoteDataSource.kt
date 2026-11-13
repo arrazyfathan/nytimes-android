@@ -1,13 +1,23 @@
 package com.arrazyfathan.nytimes.core.data.source.remote
 
-import com.arrazyfathan.nytimes.core.data.source.remote.network.*
+import com.arrazyfathan.nytimes.core.data.source.remote.network.ApiResponse
+import com.arrazyfathan.nytimes.core.data.source.remote.network.KEY_NO_INTERNET
+import com.arrazyfathan.nytimes.core.data.source.remote.network.KEY_UNAUTHORIZED
+import com.arrazyfathan.nytimes.core.data.source.remote.network.TopStoriesAPI
 import com.arrazyfathan.nytimes.core.data.source.remote.response.ArticleDto
 import com.arrazyfathan.nytimes.core.data.source.remote.response.TopStoriesDto
+import com.arrazyfathan.nytimes.core.domain.AppError
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -15,33 +25,49 @@ import javax.inject.Inject
  */
 class RemoteDataSource @Inject constructor(private val topStoriesAPI: TopStoriesAPI) {
 
-    suspend fun getTopStoriesArticle(section: String): Flow<ApiResponse<List<ArticleDto>>> {
-        return flow {
-            try {
-                val response = topStoriesAPI.getTopStories(section)
-                emit(handleResponse(response))
-            } catch (e: Exception) {
-                emit(ApiResponse.Error(e.message!!))
-            }
-        }.flowOn(Dispatchers.IO)
-    }
+    fun getTopStoriesArticle(section: String): Flow<ApiResponse<List<ArticleDto>>> = flow {
+        try {
+            val response = topStoriesAPI.getTopStories(section)
+            emit(handleResponse(response))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            emit(ApiResponse.Error(mapExceptionToError(e)))
+        }
+    }.flowOn(Dispatchers.IO)
 
     private fun handleResponse(response: Response<TopStoriesDto>): ApiResponse<List<ArticleDto>> {
-        return if (response.isSuccessful && response.body() != null) {
-            val data = response.body()!!.articleDtos
-            ApiResponse.Success(data)
+        val body = response.body()
+        return if (response.isSuccessful && body != null) {
+            val articles = body.articleDtos
+            if (articles.isEmpty()) {
+                ApiResponse.Empty
+            } else {
+                ApiResponse.Success(articles)
+            }
         } else {
-            val error = getResponseError(response.code())
-            ApiResponse.Error(error)
+            ApiResponse.Error(mapHttpCodeToError(response.code()))
         }
     }
 
-    private fun getResponseError(responseCode: Int): String {
+    private fun mapExceptionToError(throwable: Throwable): AppError {
+        return when (throwable) {
+            is UnknownHostException, is ConnectException -> AppError.NoInternet
+            is SocketTimeoutException -> AppError.Timeout
+            is HttpException -> mapHttpCodeToError(throwable.code())
+            is IOException -> AppError.NoInternet
+            else -> AppError.Unknown(throwable.localizedMessage)
+        }
+    }
+
+    private fun mapHttpCodeToError(responseCode: Int): AppError {
         return when (responseCode) {
-            KEY_NO_INTERNET -> MessageResult.NO_CONNECTION
-            KEY_SERVER_ERROR -> MessageResult.SERVER_ERROR
-            429 -> "To many request"
-            else -> "Unknown error"
+            KEY_NO_INTERNET -> AppError.NoInternet
+            KEY_UNAUTHORIZED, 403 -> AppError.Unauthorized
+            404 -> AppError.NotFound
+            429 -> AppError.TooManyRequests
+            in 500..599 -> AppError.ServerError(responseCode)
+            else -> AppError.Unknown("HTTP $responseCode")
         }
     }
 }

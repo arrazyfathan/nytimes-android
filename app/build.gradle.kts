@@ -4,9 +4,9 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.nytimes.android.application)
-    alias(libs.plugins.navigation.safeargs.kotlin)
     alias(libs.plugins.android.legacy.kapt)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.hilt.android)
@@ -119,9 +119,12 @@ dependencies {
     // Glide
     implementation(libs.glide)
 
-    // Navigation Component
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+    implementation(libs.kotlinx.serialization.core)
 
     // room
     implementation(libs.androidx.room.runtime)
@@ -132,6 +135,7 @@ dependencies {
     kapt(libs.hilt.compiler)
 
     implementation(libs.androidx.activity.ktx)
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.fragment.ktx)
 
     // Lifecycle components

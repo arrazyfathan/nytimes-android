@@ -1,5 +1,8 @@
 package com.arrazyfathan.nytimes.core.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Article(
     var articleId: String,
     var description: String,

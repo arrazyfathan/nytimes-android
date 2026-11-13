@@ -7,12 +7,10 @@ import com.arrazyfathan.logging.Logger
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class NYTimesApp : Application(), ImageLoaderFactory {
-    override fun newImageLoader(): ImageLoader {
-        return ImageLoader.Builder(this)
-            .crossfade(true)
-            .build()
-    }
+class NYTimesApp :
+    Application(),
+    ImageLoaderFactory {
+    override fun newImageLoader(): ImageLoader = ImageLoader.Builder(this).crossfade(true).build()
 
     override fun onCreate() {
         super.onCreate()

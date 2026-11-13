@@ -1,5 +1,8 @@
 package com.arrazyfathan.nytimes.core.domain.model
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Multimedia(
     var caption: String,
     var copyright: String,

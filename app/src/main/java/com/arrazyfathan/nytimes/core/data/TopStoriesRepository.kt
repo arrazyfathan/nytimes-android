@@ -1,15 +1,18 @@
 package com.arrazyfathan.nytimes.core.data
 
-import com.arrazyfathan.nytimes.core.data.source.Resource
 import com.arrazyfathan.nytimes.core.data.source.local.LocalDataSource
 import com.arrazyfathan.nytimes.core.data.source.remote.RemoteDataSource
 import com.arrazyfathan.nytimes.core.data.source.remote.network.ApiResponse
+import com.arrazyfathan.nytimes.core.domain.AppError
+import com.arrazyfathan.nytimes.core.domain.Resource
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.core.domain.repository.ITopStoriesRepository
 import com.arrazyfathan.nytimes.core.utils.mapToDomain
 import com.arrazyfathan.nytimes.core.utils.mapToEntity
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -36,13 +39,16 @@ class TopStoriesRepository @Inject constructor(
                 }
 
                 is ApiResponse.Empty -> {
-                    emit(Resource.Error(message = "Data not found"))
+                    emit(Resource.Error(AppError.NotFound))
                 }
 
                 is ApiResponse.Error -> {
-                    emit(Resource.Error(response.errorMessage))
+                    emit(Resource.Error(response.error))
                 }
             }
+        }.catch { throwable ->
+            if (throwable is CancellationException) throw throwable
+            emit(Resource.Error(AppError.Unknown(throwable.localizedMessage)))
         }
     }
 

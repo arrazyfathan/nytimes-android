@@ -58,24 +58,7 @@ fun HomeScreen(
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
-            when (page) {
-                0 -> viewModel.getTopStories(sections[page].lowercase())
-                1 -> viewModel.getTopStories(sections[page].lowercase())
-                2 -> viewModel.getTopStories(sections[page].lowercase())
-                3 -> viewModel.getTopStories(sections[page].lowercase())
-                4 -> viewModel.getTopStories(sections[page].lowercase())
-                5 -> viewModel.getTopStories(sections[page].lowercase())
-                6 -> viewModel.getTopStories(sections[page].lowercase())
-                7 -> viewModel.getTopStories(sections[page].lowercase())
-                8 -> viewModel.getTopStories(sections[page].lowercase())
-                9 -> viewModel.getTopStories(sections[page].lowercase())
-                10 -> viewModel.getTopStories(sections[page].lowercase())
-                11 -> viewModel.getTopStories(sections[page].lowercase())
-                12 -> viewModel.getTopStories(sections[page].lowercase())
-                13 -> viewModel.getTopStories(sections[page].lowercase())
-                14 -> viewModel.getTopStories(sections[page].lowercase())
-                15 -> viewModel.getTopStories(sections[page].lowercase())
-            }
+            viewModel.getTopStories(sections[page].lowercase())
         }
     }
 
@@ -119,9 +102,12 @@ fun HomeScreen(
                 .padding(paddingValues)
                 .consumeWindowInsets(paddingValues)
                 .navigationBarsPadding(),
-            pagerState,
-            state,
-            onItemSelected,
+            pagerState = pagerState,
+            state = state,
+            onItemSelected = onItemSelected,
+            onRetry = {
+                viewModel.getTopStories(sections[pagerState.currentPage].lowercase())
+            },
         )
     }
 }

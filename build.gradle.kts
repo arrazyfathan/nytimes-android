@@ -8,9 +8,9 @@ plugins {
     alias(libs.plugins.android.library) apply false
     alias(libs.plugins.android.legacy.kapt) apply false
     alias(libs.plugins.kotlin.compose) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.modulegraph)
     alias(libs.plugins.spotless) apply false
-    alias(libs.plugins.navigation.safeargs.kotlin) apply false
     alias(libs.plugins.google.services) apply false
     alias(libs.plugins.firebase.crashlytics) apply false
     alias(libs.plugins.hilt.android) apply false
@@ -26,7 +26,7 @@ subprojects {
                 target("**/*.kt")
                 targetExclude("**/build/**/*.kt")
                 ktlint().apply {
-                    setEditorConfigPath("${project.rootDir}/spotless/.editorconfig")
+                    setEditorConfigPath("${project.rootDir}/.editorconfig")
                 }
             }
         }

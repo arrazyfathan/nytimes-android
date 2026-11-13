@@ -14,33 +14,18 @@ class NetworkInterceptor(private val context: Context) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!context.isInternetAvailable()) {
-            return createResponse(
-                KEY_NO_INTERNET,
-                MessageResult.NO_CONNECTION,
-                chain,
-            )
+            return createOfflineResponse(chain)
         }
-        return try {
-            val response = chain.proceed(chain.request())
-            response
-        } catch (e: Exception) {
-            createResponse(500, MessageResult.SERVER_ERROR, chain)
-        }
+        return chain.proceed(chain.request())
     }
 
-    private fun createResponse(
-        statusCode: Int,
-        message: String,
-        chain: Interceptor.Chain,
-    ): Response {
+    private fun createOfflineResponse(chain: Interceptor.Chain): Response {
         val type = "application/json; charset=utf-8".toMediaTypeOrNull()
         return Response.Builder()
             .protocol(Protocol.HTTP_1_1)
-            .code(statusCode)
-            .message("network error")
-            .body(
-                message.toResponseBody(type),
-            )
+            .code(KEY_NO_INTERNET)
+            .message("No internet connection")
+            .body(MessageResult.NO_CONNECTION.toResponseBody(type))
             .request(chain.request())
             .build()
     }

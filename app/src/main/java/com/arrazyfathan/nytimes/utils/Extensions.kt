@@ -23,29 +23,33 @@ fun String.toLocalDateTime(): LocalDateTime {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun LocalDateTime.format(pattern: String, locale: Locale = Locale.getDefault()): String {
+fun LocalDateTime.format(
+    pattern: String,
+    locale: Locale = Locale.getDefault(),
+): String {
     val formatter = DateTimeFormatter.ofPattern(pattern, locale)
     return this.format(formatter)
 }
 
 fun Context.launchUrl(url: String) {
-    val builder = CustomTabsIntent.Builder()
-        .setInitialActivityHeightPx(200)
-        .setCloseButtonPosition(CustomTabsIntent.CLOSE_BUTTON_POSITION_END)
-        .build()
+    val builder =
+        CustomTabsIntent
+            .Builder()
+            .setInitialActivityHeightPx(200)
+            .setCloseButtonPosition(CustomTabsIntent.CLOSE_BUTTON_POSITION_END)
+            .build()
 
     builder.launchUrl(this, Uri.parse(url))
 }
 
-inline fun <reified T> fromJson(json: String): T {
-    return Gson().fromJson(json, object : TypeToken<T>() {}.type)
-}
+inline fun <reified T> fromJson(json: String): T = Gson().fromJson(json, object : TypeToken<T>() {}.type)
 
-fun Any.toJson(): String {
-    return Gson().toJson(this)
-}
+fun Any.toJson(): String = Gson().toJson(this)
 
-fun convertDateToPattern(inputDate: String, outputFormat: String): String {
+fun convertDateToPattern(
+    inputDate: String,
+    outputFormat: String,
+): String {
     val sdfInput = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH)
     val sdfOutput = SimpleDateFormat(outputFormat, Locale.ENGLISH)
 

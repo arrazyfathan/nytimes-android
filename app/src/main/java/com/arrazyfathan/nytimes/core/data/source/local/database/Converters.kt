@@ -6,9 +6,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class Converters {
-
     companion object {
-
         @JvmStatic
         @TypeConverter
         fun toListMultimedia(string: String?): List<Multimedia>? {

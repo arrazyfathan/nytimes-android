@@ -8,8 +8,6 @@ import androidx.compose.runtime.Composable
  */
 
 @Composable
-fun NyTimesTheme(
-    content: @Composable () -> Unit,
-) {
+fun NyTimesTheme(content: @Composable () -> Unit) {
     MaterialTheme(content = content)
 }

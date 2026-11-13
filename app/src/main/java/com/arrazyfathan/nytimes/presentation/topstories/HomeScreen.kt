@@ -3,7 +3,6 @@ package com.arrazyfathan.nytimes.presentation.topstories
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,18 +14,20 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.arrazyfathan.nytimes.R
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.designsystem.components.TabLayout
@@ -42,19 +43,20 @@ import kotlinx.coroutines.flow.collect
 @OptIn(ExperimentalFoundationApi::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: TopStoriesViewModel,
     onBookmarkClicked: () -> Unit,
     sections: List<String>,
     onItemSelected: (Article) -> Unit,
 ) {
+    val viewModel: TopStoriesViewModel = hiltViewModel()
     val appBarColor = Color.White
 
     SyncStatusBarWithAppBar(appBarColor)
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { sections.size },
-    )
+    val pagerState =
+        rememberPagerState(
+            initialPage = 0,
+            pageCount = { sections.size },
+        )
 
     LaunchedEffect(pagerState) {
         snapshotFlow { pagerState.currentPage }.collect { page ->
@@ -62,18 +64,22 @@ fun HomeScreen(
         }
     }
 
-    val state by viewModel.state.collectAsState()
+    val sectionStates by viewModel.sectionStates.collectAsState()
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                modifier = Modifier.statusBarsPadding(),
-                contentPadding = PaddingValues(16.dp),
-                backgroundColor = appBarColor,
+            Surface(
+                color = appBarColor,
+                elevation = 0.dp,
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .statusBarsPadding()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "Top Stories",
@@ -89,8 +95,7 @@ fun HomeScreen(
                             painter = painterResource(id = R.drawable.bookmarks),
                             contentDescription = null,
                             tint = Color.Black,
-                            modifier = Modifier
-                                .size(24.dp),
+                            modifier = Modifier.size(24.dp),
                         )
                     }
                 }
@@ -98,15 +103,16 @@ fun HomeScreen(
         },
     ) { paddingValues ->
         TabLayout(
-            modifier = Modifier
-                .padding(paddingValues)
-                .consumeWindowInsets(paddingValues)
-                .navigationBarsPadding(),
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .navigationBarsPadding(),
             pagerState = pagerState,
-            state = state,
+            sectionStates = sectionStates,
             onItemSelected = onItemSelected,
-            onRetry = {
-                viewModel.getTopStories(sections[pagerState.currentPage].lowercase())
+            onRetry = { section ->
+                viewModel.getTopStories(section, forceRefresh = true)
             },
         )
     }

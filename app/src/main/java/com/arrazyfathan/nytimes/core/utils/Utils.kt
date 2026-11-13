@@ -5,9 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class Utils {
-
     companion object {
-
         fun dateTimeAgo(date: String): String {
             val dateFormatted = date.substring(0, 19) + "Z"
             val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())

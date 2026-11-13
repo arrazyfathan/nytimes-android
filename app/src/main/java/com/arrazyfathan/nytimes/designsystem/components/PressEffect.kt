@@ -20,55 +20,55 @@ import androidx.compose.ui.input.pointer.pointerInput
 
 enum class ButtonState { Pressed, Idle }
 
-fun Modifier.bounceClick() = composed {
-    var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-    val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.95f else 1f)
+fun Modifier.bounceClick() =
+    composed {
+        var buttonState by remember { mutableStateOf(ButtonState.Idle) }
+        val scale by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0.95f else 1f)
 
-    this
-        .graphicsLayer {
-            scaleX = scale
-            scaleY = scale
-        }
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = { },
-        )
-        .pointerInput(buttonState) {
-            awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
-                    waitForUpOrCancellation()
-                    ButtonState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    ButtonState.Pressed
+        this
+            .graphicsLayer {
+                scaleX = scale
+                scaleY = scale
+            }.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { },
+            ).pointerInput(buttonState) {
+                awaitPointerEventScope {
+                    buttonState =
+                        if (buttonState == ButtonState.Pressed) {
+                            waitForUpOrCancellation()
+                            ButtonState.Idle
+                        } else {
+                            awaitFirstDown(false)
+                            ButtonState.Pressed
+                        }
                 }
             }
-        }
-}
+    }
 
-fun Modifier.pressClickEffect() = composed {
-    var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-    val ty by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0f else -20f)
+fun Modifier.pressClickEffect() =
+    composed {
+        var buttonState by remember { mutableStateOf(ButtonState.Idle) }
+        val ty by animateFloatAsState(if (buttonState == ButtonState.Pressed) 0f else -20f)
 
-    this
-        .graphicsLayer {
-            translationY = ty
-        }
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null,
-            onClick = { },
-        )
-        .pointerInput(buttonState) {
-            awaitPointerEventScope {
-                buttonState = if (buttonState == ButtonState.Pressed) {
-                    waitForUpOrCancellation()
-                    ButtonState.Idle
-                } else {
-                    awaitFirstDown(false)
-                    ButtonState.Pressed
+        this
+            .graphicsLayer {
+                translationY = ty
+            }.clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = { },
+            ).pointerInput(buttonState) {
+                awaitPointerEventScope {
+                    buttonState =
+                        if (buttonState == ButtonState.Pressed) {
+                            waitForUpOrCancellation()
+                            ButtonState.Idle
+                        } else {
+                            awaitFirstDown(false)
+                            ButtonState.Pressed
+                        }
                 }
             }
-        }
-}
+    }

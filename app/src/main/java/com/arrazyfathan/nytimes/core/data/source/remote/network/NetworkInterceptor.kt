@@ -10,8 +10,9 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 /**
  * Created by Ar Razy Fathan Rabbani on 01/04/23.
  */
-class NetworkInterceptor(private val context: Context) : Interceptor {
-
+class NetworkInterceptor(
+    private val context: Context,
+) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!context.isInternetAvailable()) {
             return createOfflineResponse(chain)
@@ -21,7 +22,8 @@ class NetworkInterceptor(private val context: Context) : Interceptor {
 
     private fun createOfflineResponse(chain: Interceptor.Chain): Response {
         val type = "application/json; charset=utf-8".toMediaTypeOrNull()
-        return Response.Builder()
+        return Response
+            .Builder()
             .protocol(Protocol.HTTP_1_1)
             .code(KEY_NO_INTERNET)
             .message("No internet connection")

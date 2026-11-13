@@ -24,16 +24,13 @@ import com.arrazyfathan.nytimes.presentation.article.ArticleDetailViewModel
 import com.arrazyfathan.nytimes.presentation.bookmark.BookmarkScreen
 import com.arrazyfathan.nytimes.presentation.bookmark.BookmarkViewModel
 import com.arrazyfathan.nytimes.presentation.topstories.HomeScreen
-import com.arrazyfathan.nytimes.presentation.topstories.TopStoriesViewModel
 import com.arrazyfathan.nytimes.presentation.topstories.sections
 import com.arrazyfathan.nytimes.utils.launchUrl
 
 private const val TRANSITION_DURATION_MS = 300
 
 @Composable
-fun NyTimesNavDisplay(
-    modifier: Modifier = Modifier,
-) {
+fun NyTimesNavDisplay(modifier: Modifier = Modifier) {
     val backStack = rememberNavBackStack(TopStoriesRoute)
     val context = LocalContext.current
 
@@ -41,91 +38,91 @@ fun NyTimesNavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
         modifier = modifier,
-        entryDecorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator(),
-            rememberViewModelStoreNavEntryDecorator(),
-        ),
+        entryDecorators =
+            listOf(
+                rememberSaveableStateHolderNavEntryDecorator(),
+                rememberViewModelStoreNavEntryDecorator(),
+            ),
         transitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { it },
                 animationSpec = tween(TRANSITION_DURATION_MS),
-            ) togetherWith slideOutHorizontally(
-                targetOffsetX = { -it },
-                animationSpec = tween(TRANSITION_DURATION_MS),
-            )
+            ) togetherWith
+                slideOutHorizontally(
+                    targetOffsetX = { -it },
+                    animationSpec = tween(TRANSITION_DURATION_MS),
+                )
         },
         popTransitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { -it },
                 animationSpec = tween(TRANSITION_DURATION_MS),
-            ) togetherWith slideOutHorizontally(
-                targetOffsetX = { it },
-                animationSpec = tween(TRANSITION_DURATION_MS),
-            )
+            ) togetherWith
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(TRANSITION_DURATION_MS),
+                )
         },
         predictivePopTransitionSpec = {
             slideInHorizontally(
                 initialOffsetX = { -it },
                 animationSpec = tween(TRANSITION_DURATION_MS),
-            ) togetherWith slideOutHorizontally(
-                targetOffsetX = { it },
-                animationSpec = tween(TRANSITION_DURATION_MS),
-            )
+            ) togetherWith
+                slideOutHorizontally(
+                    targetOffsetX = { it },
+                    animationSpec = tween(TRANSITION_DURATION_MS),
+                )
         },
-        entryProvider = entryProvider {
-            entry<TopStoriesRoute> {
-                val viewModel: TopStoriesViewModel = hiltViewModel()
-                HomeScreen(
-                    viewModel = viewModel,
-                    onBookmarkClicked = {
-                        backStack.add(BookmarkRoute)
-                    },
-                    sections = sections,
-                    onItemSelected = { article ->
-                        backStack.add(ArticleDetailRoute(article))
-                    },
-                )
-            }
-            entry<BookmarkRoute> {
-                val viewModel: BookmarkViewModel = hiltViewModel()
-                BookmarkScreen(
-                    viewModel = viewModel,
-                    modifier = Modifier
-                        .background(Color.White)
-                        .fillMaxSize(),
-                    onClicked = { article ->
-                        backStack.add(ArticleDetailRoute(article))
-                    },
-                )
-            }
-            entry<ArticleDetailRoute> { key ->
-                val viewModel: ArticleDetailViewModel = hiltViewModel()
-                ArticleDetailScreen(
-                    viewModel = viewModel,
-                    article = key.article,
-                    onShareClicked = { context.shareArticle(key.article) },
-                    openLink = { context.launchUrl(key.article.shortUrl) },
-                    modifier = Modifier
-                        .background(Color.White)
-                        .fillMaxSize(),
-                )
-            }
-        },
+        entryProvider =
+            entryProvider {
+                entry<TopStoriesRoute> {
+                    HomeScreen(
+                        onBookmarkClicked = {
+                            backStack.add(BookmarkRoute)
+                        },
+                        sections = sections,
+                        onItemSelected = { article ->
+                            backStack.add(ArticleDetailRoute(article))
+                        },
+                    )
+                }
+                entry<BookmarkRoute> {
+                    val viewModel: BookmarkViewModel = hiltViewModel()
+                    BookmarkScreen(
+                        viewModel = viewModel,
+                        modifier = Modifier.background(Color.White).fillMaxSize(),
+                        onClicked = { article ->
+                            backStack.add(ArticleDetailRoute(article))
+                        },
+                    )
+                }
+                entry<ArticleDetailRoute> { key ->
+                    val viewModel: ArticleDetailViewModel = hiltViewModel()
+                    ArticleDetailScreen(
+                        viewModel = viewModel,
+                        article = key.article,
+                        onShareClicked = { context.shareArticle(key.article) },
+                        openLink = { context.launchUrl(key.article.shortUrl) },
+                        modifier = Modifier.background(Color.White).fillMaxSize(),
+                    )
+                }
+            },
     )
 }
 
 private fun Context.shareArticle(article: Article) {
-    val shareIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(
-            Intent.EXTRA_TEXT,
-            """
-            ${article.title}
-            ${article.description}
-            ${article.shortUrl}
-            """.trimIndent(),
-        )
-        type = "text/plain"
-    }
+    val shareIntent =
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(
+                Intent.EXTRA_TEXT,
+                """
+                ${article.title}
+                ${article.description}
+                ${article.shortUrl}
+                """.trimIndent(),
+            )
+            type = "text/plain"
+        }
     startActivity(shareIntent)
 }

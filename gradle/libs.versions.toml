@@ -9,9 +9,10 @@ versionName = "1.0"
 # Gradle Plugins
 agp = "9.5.1"
 kotlin = "2.4.21"
+ksp = "2.3.13"
 modulegraph = "0.15.0"
-spotless = "6.17.0"
-ktlint = "0.49.1"
+spotless = "7.0.2"
+ktlint = "1.5.0"
 googleServices = "4.6.0"
 crashlyticsPlugin = "3.0.8"
 hiltPlugin = "2.60.1"
@@ -125,7 +126,7 @@ spotless-gradlePlugin = { group = "com.diffplug.spotless", name = "spotless-plug
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
-android-legacy-kapt = { id = "com.android.legacy-kapt", version.ref = "agp" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 modulegraph = { id = "dev.iurysouza.modulegraph", version.ref = "modulegraph" }

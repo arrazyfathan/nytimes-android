@@ -23,26 +23,24 @@ This project is an Android application that demonstrates the effective implement
   - Gradle with Java 17 toolchain
   - **Gradle Version Catalog** (`gradle/libs.versions.toml`) for centralized dependency management
   - **Build Logic** (`build-logic`) convention plugins (`nytimes.android.application`, `nytimes.android.library`)
-  - [Spotless](https://github.com/diffplug/spotless) with ktlint for automated code formatting
+  - [Spotless](https://github.com/diffplug/spotless) with ktlint (configured via root `.editorconfig` with Compose support) for automated code formatting
 - **UI & Presentation**:
-  - [Jetpack Compose](https://developer.android.com/jetpack/compose) & ViewBinding
+  - 100% [Jetpack Compose](https://developer.android.com/jetpack/compose) UI (single-activity, edge-to-edge)
   - [Material Components](https://github.com/material-components/material-components-android)
-  - [Glide](https://github.com/bumptech/glide) & [Coil](https://coil-kt.github.io/coil/) for image loading and caching
-  - [Lottie](https://github.com/airbnb/lottie-android) for native animations
-  - [SwipeRefreshLayout](https://developer.android.com/jetpack/androidx/releases/swiperefreshlayout)
+  - [Coil](https://coil-kt.github.io/coil/) for Compose image loading and caching
 - **Architecture**:
-  - Clean Architecture (Domain, Data, Presentation layers)
-  - MVVM Architecture with StateFlow / LiveData
+  - Clean Architecture (Domain, Data, Presentation layers with strict dependency inversion)
+  - MVVM Architecture with `StateFlow` and typed `AppError` / `Resource` error handling
   - Repository Pattern
 - **Jetpack Libraries**:
-  - [Navigation Component](https://developer.android.com/guide/navigation) with Safe Args
-  - [Room Persistence](https://developer.android.com/training/data-storage/room) for local caching
-  - [Lifecycle & ViewModel](https://developer.android.com/topic/libraries/architecture)
+  - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) (`NavDisplay`, type-safe `@Serializable` `NavKey` routes, `rememberNavBackStack`, and `ViewModelStoreNavEntryDecorator`)
+  - [Room Persistence](https://developer.android.com/training/data-storage/room) for local bookmark caching
+  - [Lifecycle & ViewModel](https://developer.android.com/topic/libraries/architecture) (`lifecycle-viewmodel-navigation3`)
 - **Dependency Injection**:
-  - [Dagger Hilt](https://dagger.dev/hilt/) for dependency injection
+  - [Dagger Hilt](https://dagger.dev/hilt/) (`hiltViewModel` integration)
 - **Networking & API**:
   - [Retrofit](https://square.github.io/retrofit/) & [OkHttp](https://square.github.io/okhttp/)
-  - [Gson](https://github.com/google/gson) for JSON serialization
+  - [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization) & [Gson](https://github.com/google/gson) for JSON serialization
   - Custom logging interceptor with [Timber](https://github.com/JakeWharton/timber)
 - **Monitoring & Analytics**:
   - [Firebase Crashlytics](https://firebase.google.com/products/crashlytics) & [Firebase Analytics](https://firebase.google.com/products/analytics) (via Firebase BoM)
@@ -51,12 +49,20 @@ This project is an Android application that demonstrates the effective implement
 
 ```
 nytimes-android/
-├── app/                  # Main application module (UI, DI, domain, data)
-├── logging/              # Reusable logger module with Timber wrapper
-├── build-logic/          # Gradle composite build with convention plugins
-│   └── convention/       # Convention plugins for Android application and library modules
+├── app/                              # Main application module
+│   └── src/main/java/.../nytimes/
+│       ├── core/
+│       │   ├── data/                 # Repository implementation, Room (local), Retrofit (remote)
+│       │   ├── di/                   # Hilt DI modules (Database, Network, Repository)
+│       │   └── domain/               # Domain models, Resource, AppError, repository & use case contracts
+│       ├── designsystem/             # Compose theme, colors, typography, and reusable components
+│       └── presentation/             # MainActivity, Navigation 3 (Routes, NavDisplay), feature screens & ViewModels
+├── logging/                          # Reusable logger module with Timber wrapper
+├── build-logic/                      # Gradle composite build with convention plugins
+│   └── convention/                   # Convention plugins for Android application and library modules
+├── .editorconfig                     # ktlint & formatting rules (Compose-aware)
 └── gradle/
-    └── libs.versions.toml # Gradle Version Catalog
+    └── libs.versions.toml            # Gradle Version Catalog
 ```
 
 ## Module Dependency Graph

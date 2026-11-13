@@ -11,4 +11,6 @@ data object TopStoriesRoute : NavKey
 data object BookmarkRoute : NavKey
 
 @Serializable
-data class ArticleDetailRoute(val article: Article) : NavKey
+data class ArticleDetailRoute(
+    val article: Article,
+) : NavKey

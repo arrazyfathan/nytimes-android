@@ -12,17 +12,16 @@ import com.arrazyfathan.nytimes.core.domain.model.TopStories
  * Created by Ar Razy Fathan Rabbani on 27/03/23.
  */
 
-fun TopStoriesDto.mapToDomain(): TopStories {
-    return TopStories(
+fun TopStoriesDto.mapToDomain(): TopStories =
+    TopStories(
         copyright = this.copyright.orEmpty(),
         lastUpdated = this.lastUpdated.orEmpty(),
         articles = this.articleDtos.map { it.mapToDomain() },
         section = this.section.orEmpty(),
     )
-}
 
-fun ArticleDto.mapToDomain(): Article {
-    return Article(
+fun ArticleDto.mapToDomain(): Article =
+    Article(
         articleId = "",
         description = this.description.orEmpty(),
         byline = this.byline.orEmpty(),
@@ -40,10 +39,9 @@ fun ArticleDto.mapToDomain(): Article {
         uri = this.uri.orEmpty(),
         url = this.url.orEmpty(),
     )
-}
 
-fun MultimediaDto.mapToDomain(): Multimedia {
-    return Multimedia(
+fun MultimediaDto.mapToDomain(): Multimedia =
+    Multimedia(
         caption = this.caption.orEmpty(),
         copyright = this.copyright.orEmpty(),
         format = this.format.orEmpty(),
@@ -53,10 +51,9 @@ fun MultimediaDto.mapToDomain(): Multimedia {
         url = this.url.orEmpty(),
         width = this.width ?: 0,
     )
-}
 
-fun ArticleEntity.mapToDomain(): Article {
-    return Article(
+fun ArticleEntity.mapToDomain(): Article =
+    Article(
         articleId = this.articleId,
         description = this.description,
         byline = this.byline,
@@ -74,10 +71,9 @@ fun ArticleEntity.mapToDomain(): Article {
         uri = this.uri,
         url = this.url,
     )
-}
 
-fun Article.mapToEntity(): ArticleEntity {
-    return ArticleEntity(
+fun Article.mapToEntity(): ArticleEntity =
+    ArticleEntity(
         articleId = this.articleId,
         description = this.description,
         byline = this.byline,
@@ -95,4 +91,3 @@ fun Article.mapToEntity(): ArticleEntity {
         uri = this.uri,
         url = this.url,
     )
-}

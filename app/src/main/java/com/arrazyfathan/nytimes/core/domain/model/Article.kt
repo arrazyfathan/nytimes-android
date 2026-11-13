@@ -1,37 +1,34 @@
 package com.arrazyfathan.nytimes.core.domain.model
 
+import androidx.compose.runtime.Immutable
 import kotlinx.serialization.Serializable
 
+@Immutable
 @Serializable
 data class Article(
-    var articleId: String,
-    var description: String,
-    var byline: String,
-    var createdDate: String,
-    var itemType: String,
-    var kicker: String,
-    var materialTypeFacet: String,
-    var multimedia: List<Multimedia>,
-    var publishedDate: String,
-    var section: String,
-    var shortUrl: String,
-    var subsection: String,
-    var title: String,
-    var updatedDate: String,
-    var uri: String,
-    var url: String,
-    var isBookmarked: Boolean = false,
+    val articleId: String,
+    val description: String,
+    val byline: String,
+    val createdDate: String,
+    val itemType: String,
+    val kicker: String,
+    val materialTypeFacet: String,
+    val multimedia: List<Multimedia>,
+    val publishedDate: String,
+    val section: String,
+    val shortUrl: String,
+    val subsection: String,
+    val title: String,
+    val updatedDate: String,
+    val uri: String,
+    val url: String,
+    val isBookmarked: Boolean = false,
 ) {
-    fun getImage(): String? {
-        return try {
-            multimedia.last().url
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
-        }
-    }
+    fun getImage(): String = multimedia.lastOrNull()?.url.orEmpty()
 
-    fun getMainImage() = multimedia.first().url
-    fun getImageCaption() = multimedia.map { it.caption }.first()
-    fun getImageCopyright() = multimedia.map { it.copyright }.first()
+    fun getMainImage(): String = multimedia.firstOrNull()?.url.orEmpty()
+
+    fun getImageCaption(): String = multimedia.firstOrNull()?.caption.orEmpty()
+
+    fun getImageCopyright(): String = multimedia.firstOrNull()?.copyright.orEmpty()
 }

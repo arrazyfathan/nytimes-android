@@ -15,25 +15,25 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class ArticleDetailViewModel @Inject constructor(
-    private val topStoriesUseCase: TopStoriesUseCase,
-) : ViewModel() {
+class ArticleDetailViewModel
+    @Inject
+    constructor(
+        private val topStoriesUseCase: TopStoriesUseCase,
+    ) : ViewModel() {
+        private var _state = MutableSharedFlow<ArticleDetailUiState>()
+        val state: SharedFlow<ArticleDetailUiState> get() = _state
 
-    private var _state = MutableSharedFlow<ArticleDetailUiState>()
-    val state: SharedFlow<ArticleDetailUiState> get() = _state
+        fun checkArticleIsBookmarked(articleId: String) = topStoriesUseCase.checkArticleIsBookmarked(articleId)
 
-    fun checkArticleIsBookmarked(articleId: String) =
-        topStoriesUseCase.checkArticleIsBookmarked(articleId)
+        fun bookmarkArticle(article: Article) {
+            viewModelScope.launch {
+                topStoriesUseCase.insertArticle(article)
+            }
+        }
 
-    fun bookmarkArticle(article: Article) {
-        viewModelScope.launch {
-            topStoriesUseCase.insertArticle(article)
+        fun removeBookmark(article: Article) {
+            viewModelScope.launch {
+                topStoriesUseCase.deleteArticle(article)
+            }
         }
     }
-
-    fun removeBookmark(article: Article) {
-        viewModelScope.launch {
-            topStoriesUseCase.deleteArticle(article)
-        }
-    }
-}

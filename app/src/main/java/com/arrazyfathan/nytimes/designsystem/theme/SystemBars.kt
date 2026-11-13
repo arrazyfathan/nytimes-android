@@ -20,21 +20,23 @@ fun SyncStatusBarWithAppBar(color: Color) {
     SideEffect {
         val activity = view.context.findActivity() ?: return@SideEffect
         val colorInt = color.toArgb()
-        val statusBarStyle = if (color.luminance() > 0.5f) {
-            SystemBarStyle.light(
-                scrim = colorInt,
-                darkScrim = colorInt,
-            )
-        } else {
-            SystemBarStyle.dark(scrim = colorInt)
-        }
+        val statusBarStyle =
+            if (color.luminance() > 0.5f) {
+                SystemBarStyle.light(
+                    scrim = colorInt,
+                    darkScrim = colorInt,
+                )
+            } else {
+                SystemBarStyle.dark(scrim = colorInt)
+            }
 
         activity.enableEdgeToEdge(statusBarStyle = statusBarStyle)
     }
 }
 
-private fun Context.findActivity(): ComponentActivity? = when (this) {
-    is ComponentActivity -> this
-    is ContextWrapper -> baseContext.findActivity()
-    else -> null
-}
+private fun Context.findActivity(): ComponentActivity? =
+    when (this) {
+        is ComponentActivity -> this
+        is ContextWrapper -> baseContext.findActivity()
+        else -> null
+    }

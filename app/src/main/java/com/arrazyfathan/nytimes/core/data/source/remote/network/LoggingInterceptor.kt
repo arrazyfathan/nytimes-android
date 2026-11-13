@@ -10,12 +10,14 @@ import okhttp3.logging.HttpLoggingInterceptor
  * Created by Ar Razy Fathan Rabbani on 01/04/23.
  */
 class LoggingInterceptor : HttpLoggingInterceptor.Logger {
-
     override fun log(message: String) {
         if (message.startsWith("{") || message.startsWith("[")) {
             try {
-                val prettyPrintJson = GsonBuilder().setPrettyPrinting()
-                    .create().toJson(JsonParser.parseString(message))
+                val prettyPrintJson =
+                    GsonBuilder()
+                        .setPrettyPrinting()
+                        .create()
+                        .toJson(JsonParser.parseString(message))
                 d("ApiLogger : $prettyPrintJson")
             } catch (m: JsonSyntaxException) {
                 d("ApiLogger : $message")

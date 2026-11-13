@@ -29,10 +29,11 @@ fun ChipText(
         text = text,
         fontSize = fontSize,
         color = Color.Black,
-        modifier = modifier
-            .clip(RoundedCornerShape(100.dp))
-            .background(colorResource(id = R.color.gray_chip))
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(100.dp))
+                .background(colorResource(id = R.color.gray_chip))
+                .padding(horizontal = 16.dp, vertical = 4.dp),
     )
 }
 

@@ -1,12 +1,11 @@
 import com.diffplug.gradle.spotless.SpotlessExtension
-import com.diffplug.gradle.spotless.SpotlessPlugin
 import dev.iurysouza.modulegraph.Orientation
 import dev.iurysouza.modulegraph.Theme
 
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.android.library) apply false
-    alias(libs.plugins.android.legacy.kapt) apply false
+    alias(libs.plugins.ksp) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.kotlin.serialization) apply false
     alias(libs.plugins.modulegraph)
@@ -17,17 +16,16 @@ plugins {
 }
 
 val ktlintVersion = libs.versions.ktlint.get()
+val spotlessPluginId = libs.plugins.spotless.get().pluginId
 
 subprojects {
     fun configureSpotless() {
-        apply<SpotlessPlugin>()
+        pluginManager.apply(spotlessPluginId)
         extensions.configure<SpotlessExtension> {
             kotlin {
                 target("**/*.kt")
                 targetExclude("**/build/**/*.kt")
-                ktlint().apply {
-                    setEditorConfigPath("${project.rootDir}/.editorconfig")
-                }
+                ktlint(ktlintVersion).setEditorConfigPath("${project.rootDir}/.editorconfig")
             }
         }
     }
@@ -49,6 +47,8 @@ moduleGraphConfig {
 
 tasks {
     register("clean", Delete::class) {
+        group = LifecycleBasePlugin.BUILD_GROUP
+        description = "Deletes the root build directory."
         delete(rootProject.layout.buildDirectory)
     }
 }

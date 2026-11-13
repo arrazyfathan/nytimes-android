@@ -2,29 +2,36 @@ package com.arrazyfathan.nytimes.designsystem.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ScrollableTabRow
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRowDefaults
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,15 +53,16 @@ import kotlinx.coroutines.launch
 fun TabLayout(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    state: TopStoriesUiState,
+    sectionStates: Map<String, TopStoriesUiState>,
     onItemSelected: (Article) -> Unit,
-    onRetry: () -> Unit = {},
+    onRetry: (String) -> Unit = {},
 ) {
     Column(modifier = modifier.background(Color.White)) {
         Tabs(pagerState = pagerState)
+        Spacer(modifier = Modifier.height(8.dp))
         TabsContent(
             pagerState = pagerState,
-            state = state,
+            sectionStates = sectionStates,
             onItemSelected = onItemSelected,
             onRetry = onRetry,
         )
@@ -63,36 +71,42 @@ fun TabLayout(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Tabs(
-    pagerState: PagerState,
-) {
+fun Tabs(pagerState: PagerState) {
     val scope = rememberCoroutineScope()
+    val tabListState = rememberLazyListState()
 
-    ScrollableTabRow(
-        selectedTabIndex = pagerState.currentPage,
-        backgroundColor = Color.White,
-        edgePadding = 0.dp,
-        indicator = { tabPositions ->
-            TabRowDefaults.Indicator(
-                Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-                height = 2.dp,
-                color = Color.White,
-            )
-        },
+    LaunchedEffect(pagerState.currentPage) {
+        tabListState.animateScrollToItem(pagerState.currentPage)
+    }
+
+    LazyRow(
+        state = tabListState,
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .background(Color.White)
+                .padding(vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        sections.forEachIndexed { index, _ ->
-            Tab(
-                text = {
-                    Text(
-                        sections[index],
-                        color = if (pagerState.currentPage == index) Color.Black else Color.LightGray,
-                        fontSize = 14.sp,
-                        fontFamily = NotoSansSemiBold,
-                    )
-                },
-                selected = pagerState.currentPage == index,
-                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-            )
+        itemsIndexed(sections) { index, title ->
+            val isSelected = pagerState.currentPage == index
+            Box(
+                modifier =
+                    Modifier
+                        .clip(RoundedCornerShape(50))
+                        .background(if (isSelected) Color.Black else Color.Transparent)
+                        .clickable { scope.launch { pagerState.animateScrollToPage(index) } }
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = title,
+                    color = if (isSelected) Color.White else Color.Gray,
+                    fontSize = 14.sp,
+                    fontFamily = NotoSansSemiBold,
+                )
+            }
         }
     }
 }
@@ -101,17 +115,26 @@ fun Tabs(
 @Composable
 fun TabsContent(
     pagerState: PagerState,
-    state: TopStoriesUiState,
+    sectionStates: Map<String, TopStoriesUiState>,
     onItemSelected: (Article) -> Unit,
-    onRetry: () -> Unit = {},
+    onRetry: (String) -> Unit = {},
 ) {
     HorizontalPager(
         state = pagerState,
-    ) {
+        key = { page -> sections[page] },
+    ) { page ->
+        val sectionKey = sections[page].lowercase()
+        val state = sectionStates[sectionKey] ?: TopStoriesUiState.Loading
+        val listState =
+            rememberSaveable(sectionKey, saver = LazyListState.Saver) {
+                LazyListState()
+            }
+
         ContentSection(
             state = state,
+            listState = listState,
             onItemSelected = onItemSelected,
-            onRetry = onRetry,
+            onRetry = { onRetry(sectionKey) },
         )
     }
 }
@@ -119,6 +142,7 @@ fun TabsContent(
 @Composable
 fun ContentSection(
     state: TopStoriesUiState,
+    listState: LazyListState,
     onItemSelected: (Article) -> Unit,
     onRetry: () -> Unit = {},
 ) {
@@ -135,9 +159,14 @@ fun ContentSection(
             is TopStoriesUiState.Success -> {
                 if (state.topStores.isNotEmpty()) {
                     LazyColumn(
+                        state = listState,
                         modifier = Modifier.fillMaxSize(),
                     ) {
-                        items(state.topStores) { article ->
+                        items(
+                            items = state.topStores,
+                            key = { article -> article.uri.ifBlank { article.url } },
+                            contentType = { "article" },
+                        ) { article ->
                             NewsItemArticle(article = article, onItemSelected = onItemSelected)
                         }
                     }
@@ -183,10 +212,11 @@ private fun ErrorContent(
         Spacer(modifier = Modifier.height(12.dp))
         Button(
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Black,
-                contentColor = Color.White,
-            ),
+            colors =
+                ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Black,
+                    contentColor = Color.White,
+                ),
         ) {
             Text(
                 text = "Retry",
@@ -197,12 +227,13 @@ private fun ErrorContent(
     }
 }
 
-private fun AppError.toDisplayMessage(): String = when (this) {
-    AppError.NoInternet -> "No internet connection. Please check your network and try again."
-    AppError.Timeout -> "Request timed out. Please try again."
-    AppError.Unauthorized -> "Unauthorized request. Please check your API key."
-    AppError.TooManyRequests -> "Too many requests. Please wait a moment and try again."
-    AppError.NotFound -> "No articles found for this section."
-    is AppError.ServerError -> "Server error (${code ?: 500}). Please try again later."
-    is AppError.Unknown -> message ?: "Something went wrong. Please try again."
-}
+private fun AppError.toDisplayMessage(): String =
+    when (this) {
+        AppError.NoInternet -> "No internet connection. Please check your network and try again."
+        AppError.Timeout -> "Request timed out. Please try again."
+        AppError.Unauthorized -> "Unauthorized request. Please check your API key."
+        AppError.TooManyRequests -> "Too many requests. Please wait a moment and try again."
+        AppError.NotFound -> "No articles found for this section."
+        is AppError.ServerError -> "Server error (${code ?: 500}). Please try again later."
+        is AppError.Unknown -> message ?: "Something went wrong. Please try again."
+    }

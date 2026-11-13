@@ -26,41 +26,48 @@ import java.util.concurrent.TimeUnit
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
-
     @Provides
-    fun provideContext(@ApplicationContext context: Context): Context = context
+    fun provideContext(
+        @ApplicationContext context: Context,
+    ): Context = context
 
     private fun getLoggingInterceptor(): HttpLoggingInterceptor {
         val logger = HttpLoggingInterceptor(LoggingInterceptor())
-        logger.level = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
-        }
+        logger.level =
+            if (BuildConfig.DEBUG) {
+                HttpLoggingInterceptor.Level.BODY
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         return logger
     }
 
     @Provides
-    fun provideOkHttpClient(context: Context): OkHttpClient {
-        return OkHttpClient.Builder()
+    fun provideOkHttpClient(context: Context): OkHttpClient =
+        OkHttpClient
+            .Builder()
             .addInterceptor(NetworkInterceptor(context))
             .addInterceptor(getLoggingInterceptor())
             .connectTimeout(1, TimeUnit.MINUTES)
             .readTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(1, TimeUnit.MINUTES)
             .build()
-    }
 
     @Provides
     fun provideGson(): Gson = GsonBuilder().setStrictness(Strictness.LENIENT).create()
 
     @Provides
-    fun provideTopStoriesApi(client: OkHttpClient, gson: Gson): TopStoriesAPI {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(TopStoriesAPI.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(client)
-            .build()
+    fun provideTopStoriesApi(
+        client: OkHttpClient,
+        gson: Gson,
+    ): TopStoriesAPI {
+        val retrofit =
+            Retrofit
+                .Builder()
+                .baseUrl(TopStoriesAPI.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(client)
+                .build()
         return retrofit.create(TopStoriesAPI::class.java)
     }
 }

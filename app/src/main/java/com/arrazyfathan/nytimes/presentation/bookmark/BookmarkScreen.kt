@@ -76,8 +76,9 @@ fun BookmarkScreen(
                     color = Color.Black,
                     fontSize = 24.sp,
                     fontFamily = DomineBold,
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 16.dp, vertical = 16.dp),
                 )
             }
         },
@@ -117,10 +118,11 @@ fun BookmarkScreen(
         }
 
         Column(
-            modifier = modifier
-                .padding(paddingValues)
-                .consumeWindowInsets(paddingValues)
-                .navigationBarsPadding(),
+            modifier =
+                modifier
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .navigationBarsPadding(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -134,12 +136,17 @@ fun BookmarkScreen(
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .weight(1f),
                     state = scrollState,
                 ) {
-                    items(state.articles, key = { it.articleId }) { article ->
+                    items(
+                        items = state.articles,
+                        key = { it.articleId },
+                        contentType = { "article" },
+                    ) { article ->
                         SwipeableNewsItemArticle(
                             article = article,
                             onItemSelected = { onClicked(article) },
@@ -147,10 +154,11 @@ fun BookmarkScreen(
                                 viewModel.selectArticle(it)
                                 showDialog = !showDialog
                             },
-                            modifier = Modifier
-                                .animateItem()
-                                .fillParentMaxWidth()
-                                .bounceClick(),
+                            modifier =
+                                Modifier
+                                    .animateItem()
+                                    .fillParentMaxWidth()
+                                    .bounceClick(),
                         )
                     }
                 }

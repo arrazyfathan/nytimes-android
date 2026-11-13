@@ -1,13 +1,19 @@
 package com.arrazyfathan.nytimes.designsystem.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -19,8 +25,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.constraintlayout.compose.Dimension.Companion.preferredWrapContent
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.arrazyfathan.nytimes.R
@@ -40,79 +44,74 @@ fun NewsItemArticle(
     modifier: Modifier = Modifier,
     onItemSelected: (Article) -> Unit,
 ) {
-    ConstraintLayout(
-        modifier = modifier.clickable { onItemSelected(article) },
-    ) {
-        val (title, description, image, chips, author) = createRefs()
-
-        val timeAgo = article.publishedDate.let { Utils.dateTimeAgo(it) }
-        val sectionText = article.subsection.ifEmpty { article.section }
-
-        ChipText(
-            text = sectionText.replaceFirstChar { it.uppercase() },
-            modifier = Modifier
-                .constrainAs(chips) {
-                    start.linkTo(parent.start, 16.dp)
-                    top.linkTo(parent.top, 16.dp)
-                },
-        )
-
-        Text(
-            text = article.title,
-            fontSize = 16.sp,
-            color = Color.Black,
-            fontFamily = DomineBold,
-            maxLines = 2,
-            modifier = Modifier
-                .constrainAs(title) {
-                    start.linkTo(chips.start)
-                    top.linkTo(chips.bottom, 8.dp)
-                    end.linkTo(image.start, 16.dp)
-
-                    height = preferredWrapContent
-                    width = preferredWrapContent
-                },
-        )
-
-        Text(
-            text = article.description,
-            fontSize = 12.sp,
-            color = Color.Black,
-            fontFamily = NotoSansRegular,
-            maxLines = 3,
-            modifier = Modifier
-                .constrainAs(description) {
-                    start.linkTo(chips.start)
-                    top.linkTo(title.bottom, 8.dp)
-                    end.linkTo(image.start, 16.dp)
-                    height = preferredWrapContent
-                    width = preferredWrapContent
-                },
-        )
-
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(article.getImage())
+    val context = LocalContext.current
+    val timeAgo =
+        remember(article.publishedDate) {
+            if (article.publishedDate.isBlank()) "" else Utils.dateTimeAgo(article.publishedDate)
+        }
+    val sectionText =
+        remember(article.subsection, article.section) {
+            article.subsection.ifEmpty { article.section }.replaceFirstChar { it.uppercase() }
+        }
+    val imageUrl = remember(article.multimedia) { article.getImage() }
+    val imageRequest =
+        remember(imageUrl, context) {
+            ImageRequest
+                .Builder(context)
+                .data(imageUrl)
                 .crossfade(true)
-                .build(),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(130.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .constrainAs(image) {
-                    end.linkTo(parent.end, 16.dp)
-                    top.linkTo(parent.top, 16.dp)
-                },
-        )
+                .build()
+        }
+    val textGray = colorResource(id = R.color.text_gray)
 
+    Column(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable { onItemSelected(article) }
+                .padding(16.dp),
+    ) {
         Row(
-            modifier = Modifier
-                .constrainAs(author) {
-                    top.linkTo(description.bottom, 16.dp)
-                    start.linkTo(chips.start)
-                    bottom.linkTo(parent.bottom, 16.dp)
-                },
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.Top,
+        ) {
+            Column(
+                modifier = Modifier.weight(1f),
+            ) {
+                ChipText(text = sectionText)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = article.title,
+                    fontSize = 16.sp,
+                    color = Color.Black,
+                    fontFamily = DomineBold,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = article.description,
+                    fontSize = 12.sp,
+                    color = Color.Black,
+                    fontFamily = NotoSansRegular,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            AsyncImage(
+                model = imageRequest,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier =
+                    Modifier
+                        .size(130.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+            )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text = article.byline,
@@ -120,23 +119,21 @@ fun NewsItemArticle(
                 overflow = TextOverflow.Ellipsis,
                 textAlign = TextAlign.Start,
                 maxLines = 1,
-                color = colorResource(id = R.color.text_gray),
+                color = textGray,
                 fontFamily = NotoSansSemiMedium,
-                modifier = Modifier.fillMaxWidth(0.2f),
+                modifier = Modifier.weight(1f, fill = false),
             )
-
             Text(
                 text = " • ",
                 fontSize = 10.sp,
-                color = colorResource(id = R.color.text_gray),
+                color = textGray,
                 fontFamily = NotoSansSemiMedium,
                 modifier = Modifier.padding(horizontal = 8.dp),
             )
-
             Text(
                 text = timeAgo,
                 fontSize = 10.sp,
-                color = colorResource(id = R.color.text_gray),
+                color = textGray,
                 fontFamily = NotoSansSemiMedium,
                 textAlign = TextAlign.Start,
             )
@@ -150,7 +147,9 @@ fun NewsItemArticlePreview() {
     NewsItemArticle(
         Article(
             articleId = "1",
-            description = "Nearly every Mac app has at least one action that takes one click (or three clicks) too many to execute—nobody wants to go through four different menus or use the search bar to find the action you need, especially if it’s something you use often. When you dis…",
+            description =
+                "Nearly every Mac app has at least one action that takes one click " +
+                    "(or three clicks) too many to execute.",
             byline = "By Michael S. Schmidt and Charlie Savage",
             createdDate = "1 Month Ago",
             itemType = "Article",
@@ -161,13 +160,14 @@ fun NewsItemArticlePreview() {
             section = "",
             shortUrl = "",
             subsection = "",
-            title = "Judge Aileen M. Cannon, under scrutiny for past rulings favoring the former president, has presided over only a few criminal cases that went to trial.",
+            title =
+                "Judge Aileen M. Cannon, under scrutiny for past rulings favoring " +
+                    "the former president, has presided over only a few criminal cases.",
             updatedDate = "",
             uri = "",
             url = "",
             isBookmarked = false,
         ),
         modifier = Modifier.fillMaxWidth(),
-    ) {
-    }
+    ) {}
 }

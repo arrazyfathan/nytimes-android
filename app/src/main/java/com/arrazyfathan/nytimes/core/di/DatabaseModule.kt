@@ -18,14 +18,18 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
-
     @Singleton
     @Provides
-    fun provideDatabase(@ApplicationContext context: Context): NytDatabase = Room.databaseBuilder(
-        context,
-        NytDatabase::class.java,
-        "nytimes.db",
-    ).fallbackToDestructiveMigration(dropAllTables = true).build()
+    fun provideDatabase(
+        @ApplicationContext context: Context,
+    ): NytDatabase =
+        Room
+            .databaseBuilder(
+                context,
+                NytDatabase::class.java,
+                "nytimes.db",
+            ).fallbackToDestructiveMigration(dropAllTables = true)
+            .build()
 
     @Provides
     fun provideNtyDao(database: NytDatabase): NytDao = database.nytDao()

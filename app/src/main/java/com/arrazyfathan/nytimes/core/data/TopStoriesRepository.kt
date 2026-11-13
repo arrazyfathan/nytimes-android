@@ -25,60 +25,60 @@ import javax.inject.Singleton
  */
 
 @Singleton
-class TopStoriesRepository @Inject constructor(
-    private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource,
-) : ITopStoriesRepository {
+class TopStoriesRepository
+    @Inject
+    constructor(
+        private val remoteDataSource: RemoteDataSource,
+        private val localDataSource: LocalDataSource,
+    ) : ITopStoriesRepository {
+        override fun getTopStories(section: String): Flow<Resource<List<Article>>> =
+            flow {
+                emit(Resource.Loading())
+                when (val response = remoteDataSource.getTopStoriesArticle(section).first()) {
+                    is ApiResponse.Success -> {
+                        emit(Resource.Success(response.data.map { it.mapToDomain() }))
+                    }
 
-    override fun getTopStories(section: String): Flow<Resource<List<Article>>> {
-        return flow {
-            emit(Resource.Loading())
-            when (val response = remoteDataSource.getTopStoriesArticle(section).first()) {
-                is ApiResponse.Success -> {
-                    emit(Resource.Success(response.data.map { it.mapToDomain() }))
-                }
+                    is ApiResponse.Empty -> {
+                        emit(Resource.Error(AppError.NotFound))
+                    }
 
-                is ApiResponse.Empty -> {
-                    emit(Resource.Error(AppError.NotFound))
+                    is ApiResponse.Error -> {
+                        emit(Resource.Error(response.error))
+                    }
                 }
-
-                is ApiResponse.Error -> {
-                    emit(Resource.Error(response.error))
-                }
+            }.catch { throwable ->
+                if (throwable is CancellationException) throw throwable
+                emit(Resource.Error(AppError.Unknown(throwable.localizedMessage)))
             }
-        }.catch { throwable ->
-            if (throwable is CancellationException) throw throwable
-            emit(Resource.Error(AppError.Unknown(throwable.localizedMessage)))
+
+        override fun getAllSavedArticle(): Flow<List<Article>> =
+            localDataSource.getAllArticle().map { articles ->
+                articles.map { it.mapToDomain() }
+            }
+
+        override fun getBookmarkedArticle(): Flow<List<Article>> =
+            localDataSource.getBookmarkedArticle().map { articles ->
+                articles.map { it.mapToDomain() }
+            }
+
+        override suspend fun insertArticle(article: Article) {
+            withContext(Dispatchers.IO) {
+                localDataSource.insertArticle(article.mapToEntity())
+            }
         }
-    }
 
-    override fun getAllSavedArticle(): Flow<List<Article>> {
-        return localDataSource.getAllArticle().map { articles ->
-            articles.map { it.mapToDomain() }
+        override fun updateArticle(
+            article: Article,
+            newState: Boolean,
+        ) {
+            localDataSource.updateArticle(article.mapToEntity(), newState)
         }
-    }
 
-    override fun getBookmarkedArticle(): Flow<List<Article>> {
-        return localDataSource.getBookmarkedArticle().map { articles ->
-            articles.map { it.mapToDomain() }
-        }
-    }
+        override suspend fun deleteArticle(article: Article) =
+            withContext(Dispatchers.IO) {
+                return@withContext localDataSource.deleteArticle(article.mapToEntity())
+            }
 
-    override suspend fun insertArticle(article: Article) {
-        withContext(Dispatchers.IO) {
-            localDataSource.insertArticle(article.mapToEntity())
-        }
+        override fun checkArticleIsBookmarked(articleId: String): Flow<Boolean> = localDataSource.checkArticleIsBookmarked(articleId)
     }
-
-    override fun updateArticle(article: Article, newState: Boolean) {
-        localDataSource.updateArticle(article.mapToEntity(), newState)
-    }
-
-    override suspend fun deleteArticle(article: Article) = withContext(Dispatchers.IO) {
-        return@withContext localDataSource.deleteArticle(article.mapToEntity())
-    }
-
-    override fun checkArticleIsBookmarked(articleId: String): Flow<Boolean> {
-        return localDataSource.checkArticleIsBookmarked(articleId)
-    }
-}

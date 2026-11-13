@@ -15,7 +15,6 @@ import dagger.hilt.android.scopes.ViewModelScoped
 @Module
 @InstallIn(ViewModelComponent::class)
 abstract class AppModule {
-
     @Binds
     @ViewModelScoped
     abstract fun provideTopStoriesUseCase(topStoriesInteractor: TopStoriesInteractor): TopStoriesUseCase

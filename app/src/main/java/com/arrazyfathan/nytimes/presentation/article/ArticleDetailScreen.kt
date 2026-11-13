@@ -86,57 +86,67 @@ fun ArticleDetailScreen(
 
     Scaffold { paddingValues ->
         Column(
-            modifier = modifier
-                .padding(paddingValues)
-                .consumeWindowInsets(paddingValues)
-                .navigationBarsPadding()
-                .verticalScroll(rememberScrollState()),
+            modifier =
+                modifier
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues)
+                    .navigationBarsPadding()
+                    .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .statusBarsPadding()
+                        .padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ChipText(
-                    text = article.section.ifBlank { "News" }
-                        .replaceFirstChar { it.uppercase() },
+                    text =
+                        article.section
+                            .ifBlank { "News" }
+                            .replaceFirstChar { it.uppercase() },
                     fontSize = 12.sp,
                 )
                 IconButton(
-                    modifier = Modifier
-                        .pressClickEffect(),
+                    modifier =
+                        Modifier
+                            .pressClickEffect(),
                     onClick = onShareClicked,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.share),
                         contentDescription = null,
-                        modifier = Modifier
-                            .size(24.dp),
+                        modifier =
+                            Modifier
+                                .size(24.dp),
                         tint = Color.Black,
                     )
                 }
             }
 
             Box(
-                modifier = Modifier
-                    .bounceClick()
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .height(250.dp),
+                modifier =
+                    Modifier
+                        .bounceClick()
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .height(250.dp),
             ) {
                 AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(article.getMainImage())
-                        .crossfade(true)
-                        .build(),
+                    model =
+                        ImageRequest
+                            .Builder(LocalContext.current)
+                            .data(article.getMainImage())
+                            .crossfade(true)
+                            .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp)),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(16.dp)),
                 )
 
                 Text(
@@ -145,10 +155,11 @@ fun ArticleDetailScreen(
                     fontFamily = NotoSansRegular,
                     color = Color.White,
                     textAlign = TextAlign.Start,
-                    modifier = Modifier
-                        .alpha(0.5f)
-                        .align(Alignment.BottomStart)
-                        .padding(start = 16.dp, bottom = 16.dp),
+                    modifier =
+                        Modifier
+                            .alpha(0.5f)
+                            .align(Alignment.BottomStart)
+                            .padding(start = 16.dp, bottom = 16.dp),
                 )
 
                 IconButton(
@@ -170,25 +181,28 @@ fun ArticleDetailScreen(
                         }
                     },
                     interactionSource = interactionSource,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(top = 16.dp, end = 16.dp)
-                        .clip(RoundedCornerShape(cornerRadius))
-                        .background(Color.White)
-                        .size(54.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(top = 16.dp, end = 16.dp)
+                            .clip(RoundedCornerShape(cornerRadius))
+                            .background(Color.White)
+                            .size(54.dp),
                 ) {
                     Icon(
-                        painter = if (bool) {
-                            painterResource(id = R.drawable.ic_bookmark_fill)
-                        } else {
-                            painterResource(
-                                R.drawable.ic_bookmark_line,
-                            )
-                        },
+                        painter =
+                            if (bool) {
+                                painterResource(id = R.drawable.ic_bookmark_fill)
+                            } else {
+                                painterResource(
+                                    R.drawable.ic_bookmark_line,
+                                )
+                            },
                         contentDescription = null,
                         tint = Color.Black,
-                        modifier = Modifier
-                            .size(24.dp),
+                        modifier =
+                            Modifier
+                                .size(24.dp),
                     )
                 }
             }
@@ -198,9 +212,10 @@ fun ArticleDetailScreen(
                 fontSize = 10.sp,
                 fontFamily = NotoSansRegular,
                 textAlign = TextAlign.Start,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
             )
 
             Text(
@@ -208,9 +223,10 @@ fun ArticleDetailScreen(
                 fontSize = 24.sp,
                 fontFamily = DomineRegular,
                 color = Color.Black,
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
+                modifier =
+                    Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
             )
 
             Divider(
@@ -231,7 +247,6 @@ fun ArticleDetailScreen(
                         text = "Author :",
                         fontSize = 12.sp,
                         fontFamily = NotoSansRegular,
-
                     )
                     Text(
                         text = article.byline,
@@ -274,44 +289,50 @@ fun ArticleDetailScreen(
                 shape = RoundedCornerShape(8.dp),
                 backgroundColor = Color.White,
                 border = BorderStroke(0.5.dp, Color.Black.copy(alpha = 0.3f)),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .bounceClick()
-                    .clickable { openLink() },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .bounceClick()
+                        .clickable { openLink() },
             ) {
                 ConstraintLayout(
-                    modifier = Modifier
-                        .padding(10.dp),
+                    modifier =
+                        Modifier
+                            .padding(10.dp),
                 ) {
                     val (image, content, icon) = createRefs()
 
                     AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(article.getImage())
-                            .crossfade(true)
-                            .build(),
+                        model =
+                            ImageRequest
+                                .Builder(LocalContext.current)
+                                .data(article.getImage())
+                                .crossfade(true)
+                                .build(),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(40.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .constrainAs(image) {
-                                start.linkTo(parent.start)
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                            },
+                        modifier =
+                            Modifier
+                                .size(40.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .constrainAs(image) {
+                                    start.linkTo(parent.start)
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                },
                     )
 
                     Column(
-                        modifier = Modifier
-                            .constrainAs(content) {
-                                top.linkTo(image.top)
-                                bottom.linkTo(image.bottom)
-                                start.linkTo(image.end, 8.dp)
-                                end.linkTo(icon.start, 16.dp)
-                                width = Dimension.fillToConstraints
-                            },
+                        modifier =
+                            Modifier
+                                .constrainAs(content) {
+                                    top.linkTo(image.top)
+                                    bottom.linkTo(image.bottom)
+                                    start.linkTo(image.end, 8.dp)
+                                    end.linkTo(icon.start, 16.dp)
+                                    width = Dimension.fillToConstraints
+                                },
                     ) {
                         Text(
                             text = "OPEN LINK",
@@ -331,20 +352,22 @@ fun ArticleDetailScreen(
 
                     IconButton(
                         onClick = { },
-                        modifier = Modifier
-                            .constrainAs(icon) {
-                                top.linkTo(parent.top)
-                                bottom.linkTo(parent.bottom)
-                                end.linkTo(parent.end)
-                                height = Dimension.preferredWrapContent
-                            },
+                        modifier =
+                            Modifier
+                                .constrainAs(icon) {
+                                    top.linkTo(parent.top)
+                                    bottom.linkTo(parent.bottom)
+                                    end.linkTo(parent.end)
+                                    height = Dimension.preferredWrapContent
+                                },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_exsternal_link),
                             contentDescription = null,
                             tint = Color.Black,
-                            modifier = Modifier
-                                .size(20.dp),
+                            modifier =
+                                Modifier
+                                    .size(20.dp),
                         )
                     }
                 }

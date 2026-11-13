@@ -1,10 +1,8 @@
-@file:Suppress("UnstableApiUsage")
-
 import java.util.Properties
 
 plugins {
     alias(libs.plugins.nytimes.android.application)
-    alias(libs.plugins.android.legacy.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
@@ -13,10 +11,11 @@ plugins {
 }
 
 val localPropsFile = rootProject.file("local.properties")
-val localProps = Properties().apply {
-    load(localPropsFile.inputStream())
-}
-val apiKey = localProps.getProperty("API_KEY")
+val localProps =
+    Properties().apply {
+        load(localPropsFile.inputStream())
+    }
+val apiKey: String? = localProps.getProperty("API_KEY")
 val keystoreFile = rootProject.file("nytimes-keystore")
 
 android {
@@ -31,7 +30,7 @@ android {
         versionName = DefaultConfig.versionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", apiKey)
+        buildConfigField("String", "API_KEY", apiKey ?: "")
     }
 
     signingConfigs {
@@ -77,18 +76,12 @@ android {
     }
 }
 
-kapt {
-    correctErrorTypes = true
-}
-
 dependencies {
 
     implementation(project(":logging"))
 
     // Compose
-    val composeBom = platform(libs.compose.bom)
-    implementation(composeBom)
-    androidTestImplementation(composeBom)
+    implementation(platform(libs.compose.bom))
     implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
     implementation(libs.compose.foundation)
@@ -128,11 +121,11 @@ dependencies {
 
     // room
     implementation(libs.androidx.room.runtime)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     implementation(libs.androidx.activity.ktx)
     implementation(libs.androidx.activity.compose)

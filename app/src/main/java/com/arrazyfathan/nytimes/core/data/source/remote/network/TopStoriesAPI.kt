@@ -11,7 +11,6 @@ import retrofit2.http.Query
  * Created by Ar Razy Fathan Rabbani on 27/03/23.
  */
 interface TopStoriesAPI {
-
     companion object {
         const val BASE_URL = "https://api.nytimes.com/svc/"
         const val API_KEY = BuildConfig.API_KEY

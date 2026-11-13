@@ -16,47 +16,48 @@ import javax.inject.Inject
  */
 
 @HiltViewModel
-class BookmarkViewModel @Inject constructor(
-    private val topStoriesUseCase: TopStoriesUseCase,
-) : ViewModel() {
+class BookmarkViewModel
+    @Inject
+    constructor(
+        private val topStoriesUseCase: TopStoriesUseCase,
+    ) : ViewModel() {
+        private var _state = MutableStateFlow(BookmarkUiState())
+        val state: StateFlow<BookmarkUiState> get() = _state
 
-    private var _state = MutableStateFlow(BookmarkUiState())
-    val state: StateFlow<BookmarkUiState> get() = _state
+        init {
+            getAllBookmarkedArticle()
+        }
 
-    init {
-        getAllBookmarkedArticle()
-    }
+        private fun getAllBookmarkedArticle() {
+            viewModelScope.launch {
+                topStoriesUseCase.getAllArticle().collect { articles ->
+                    _state.update { state ->
+                        state.copy(
+                            articles = articles,
+                        )
+                    }
+                }
+            }
+        }
 
-    private fun getAllBookmarkedArticle() {
-        viewModelScope.launch {
-            topStoriesUseCase.getAllArticle().collect { articles ->
-                _state.update { state ->
-                    state.copy(
-                        articles = articles,
+        fun selectArticle(article: Article) {
+            viewModelScope.launch {
+                _state.update {
+                    it.copy(
+                        selectedArticle = article,
+                    )
+                }
+            }
+        }
+
+        fun removeArticle(article: Article) {
+            viewModelScope.launch {
+                topStoriesUseCase.deleteArticle(article)
+                _state.update {
+                    it.copy(
+                        selectedArticle = null,
                     )
                 }
             }
         }
     }
-
-    fun selectArticle(article: Article) {
-        viewModelScope.launch {
-            _state.update {
-                it.copy(
-                    selectedArticle = article,
-                )
-            }
-        }
-    }
-
-    fun removeArticle(article: Article) {
-        viewModelScope.launch {
-            topStoriesUseCase.deleteArticle(article)
-            _state.update {
-                it.copy(
-                    selectedArticle = null,
-                )
-            }
-        }
-    }
-}

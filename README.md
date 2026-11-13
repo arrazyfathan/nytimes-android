@@ -14,30 +14,39 @@ This project is an Android application that demonstrates the effective implement
 <img src="media/screenshot.png"/>
 </p>
 
+## Features
+
+- **Offline-First Top Stories**: Room acts as the single source of truth per news section (`CachedArticleEntity`), emitting cached articles immediately, refreshing from the remote NYTimes API in the background, and falling back to local cache when offline.
+- **Adaptive Two-Pane List-Detail Layout**: Built with the **Jetpack Navigation 3 Scenes API** (`ListDetailScene` & `ListDetailSceneStrategy`) and `LocalWindowInfo.current.containerSize` to automatically display news lists and article details side-by-side on foldable phones (unfolded) and tablets (`>= 600dp`), while falling back to full-screen single-pane navigation on compact screens.
+- **Per-Tab State & Scroll Persistence**: Retains loaded section state in `TopStoriesViewModel` and preserves `LazyColumn` scroll positions per section across tab switches and navigation.
+- **Bookmarks**: Save and manage bookmarked articles locally with Room (`ArticleEntity`) and swipe-to-delete support.
+- **Predictive Back Gesture**: Enabled with custom horizontal slide transitions in `NavDisplay`.
+
 ## Tech Stack & Architecture
 
 - **Minimum SDK Level**: 24 (Android 7.0+)
 - **Compile / Target SDK**: 37
 - **Language & Runtime**: [Kotlin](https://kotlinlang.org/) with [Coroutines](https://github.com/Kotlin/kotlinx.coroutines) & Flow
 - **Build System & Tooling**:
-  - Gradle with Java 17 toolchain
+  - Gradle 9.9.1 with Java 17 target compatibility and JDK 24+ native access support
+  - [KSP (Kotlin Symbol Processing)](https://github.com/google/ksp) for Room and Dagger Hilt annotation processing
   - **Gradle Version Catalog** (`gradle/libs.versions.toml`) for centralized dependency management
   - **Build Logic** (`build-logic`) convention plugins (`nytimes.android.application`, `nytimes.android.library`)
-  - [Spotless](https://github.com/diffplug/spotless) with ktlint (configured via root `.editorconfig` with Compose support) for automated code formatting
+  - [Spotless](https://github.com/diffplug/spotless) (`7.0.2`) with ktlint (`1.5.0`, configured via root `.editorconfig` with Compose support) for automated code formatting (`./gradlew spotlessApply`)
 - **UI & Presentation**:
-  - 100% [Jetpack Compose](https://developer.android.com/jetpack/compose) UI (single-activity, edge-to-edge)
+  - 100% [Jetpack Compose](https://developer.android.com/jetpack/compose) UI (single-activity, edge-to-edge, adaptive two-pane layout)
   - [Material Components](https://github.com/material-components/material-components-android)
   - [Coil](https://coil-kt.github.io/coil/) for Compose image loading and caching
 - **Architecture**:
-  - Clean Architecture (Domain, Data, Presentation layers with strict dependency inversion)
-  - MVVM Architecture with `StateFlow` and typed `AppError` / `Resource` error handling
-  - Repository Pattern
+  - Offline-first Clean Architecture (Domain, Data, Presentation layers with strict dependency inversion)
+  - MVVM Architecture with `StateFlow` and typed `AppError` / `Resource` error handling with retry support
+  - Repository Pattern with Room single source of truth
 - **Jetpack Libraries**:
-  - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) (`NavDisplay`, type-safe `@Serializable` `NavKey` routes, `rememberNavBackStack`, and `ViewModelStoreNavEntryDecorator`)
-  - [Room Persistence](https://developer.android.com/training/data-storage/room) for local bookmark caching
+  - [Navigation 3](https://developer.android.com/guide/navigation/navigation-3) (`NavDisplay`, `Scene` / `SceneStrategy` adaptive list-detail layout, type-safe `@Serializable` `NavKey` routes, `rememberNavBackStack`, and `ViewModelStoreNavEntryDecorator`)
+  - [Room Persistence](https://developer.android.com/training/data-storage/room) for offline-first top stories caching (`cached_articles`) and bookmarks (`articles`)
   - [Lifecycle & ViewModel](https://developer.android.com/topic/libraries/architecture) (`lifecycle-viewmodel-navigation3`)
 - **Dependency Injection**:
-  - [Dagger Hilt](https://dagger.dev/hilt/) (`hiltViewModel` integration)
+  - [Dagger Hilt](https://dagger.dev/hilt/) (with KSP & `hiltViewModel` integration)
 - **Networking & API**:
   - [Retrofit](https://square.github.io/retrofit/) & [OkHttp](https://square.github.io/okhttp/)
   - [Kotlin Serialization](https://github.com/Kotlin/kotlinx.serialization) & [Gson](https://github.com/google/gson) for JSON serialization
@@ -56,7 +65,7 @@ nytimes-android/
 │       │   ├── di/                   # Hilt DI modules (Database, Network, Repository)
 │       │   └── domain/               # Domain models, Resource, AppError, repository & use case contracts
 │       ├── designsystem/             # Compose theme, colors, typography, and reusable components
-│       └── presentation/             # MainActivity, Navigation 3 (Routes, NavDisplay), feature screens & ViewModels
+│       └── presentation/             # MainActivity, Navigation 3 (Routes, NavDisplay, ListDetailScene), feature screens & ViewModels
 ├── logging/                          # Reusable logger module with Timber wrapper
 ├── build-logic/                      # Gradle composite build with convention plugins
 │   └── convention/                   # Convention plugins for Android application and library modules

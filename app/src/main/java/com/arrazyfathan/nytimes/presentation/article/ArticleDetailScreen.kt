@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.arrazyfathan.nytimes.R
@@ -67,17 +68,20 @@ import com.arrazyfathan.nytimes.utils.convertDateToPattern
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ArticleDetailScreen(
-    viewModel: ArticleDetailViewModel,
     article: Article,
     onShareClicked: () -> Unit,
     openLink: () -> Unit,
     modifier: Modifier,
 ) {
+    val viewModel: ArticleDetailViewModel = hiltViewModel()
     val appBarColor = Color.White
 
     SyncStatusBarWithAppBar(appBarColor)
 
-    val bool by viewModel.checkArticleIsBookmarked(article.shortUrl).collectAsState(initial = false)
+    val articleKey = article.uniqueId
+    val bool by remember(articleKey) {
+        viewModel.checkArticleIsBookmarked(articleKey)
+    }.collectAsState(initial = false)
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed = interactionSource.collectIsPressedAsState()
     val cornerRadius by animateDpAsState(targetValue = if (isPressed.value) 10.dp else 50.dp)
@@ -94,33 +98,22 @@ fun ArticleDetailScreen(
                     .verticalScroll(rememberScrollState()),
         ) {
             Row(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .statusBarsPadding()
-                        .padding(16.dp),
+                modifier = Modifier.fillMaxWidth().statusBarsPadding().padding(16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ChipText(
-                    text =
-                        article.section
-                            .ifBlank { "News" }
-                            .replaceFirstChar { it.uppercase() },
+                    text = article.section.ifBlank { "News" }.replaceFirstChar { it.uppercase() },
                     fontSize = 12.sp,
                 )
                 IconButton(
-                    modifier =
-                        Modifier
-                            .pressClickEffect(),
+                    modifier = Modifier.pressClickEffect(),
                     onClick = onShareClicked,
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.share),
                         contentDescription = null,
-                        modifier =
-                            Modifier
-                                .size(24.dp),
+                        modifier = Modifier.size(24.dp),
                         tint = Color.Black,
                     )
                 }
@@ -143,10 +136,7 @@ fun ArticleDetailScreen(
                             .build(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .clip(RoundedCornerShape(16.dp)),
+                    modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(16.dp)),
                 )
 
                 Text(
@@ -167,14 +157,14 @@ fun ArticleDetailScreen(
                         if (bool) {
                             viewModel.removeBookmark(
                                 article.copy(
-                                    articleId = article.shortUrl,
-                                    isBookmarked = true,
+                                    articleId = articleKey,
+                                    isBookmarked = false,
                                 ),
                             )
                         } else {
                             viewModel.bookmarkArticle(
                                 article.copy(
-                                    articleId = article.shortUrl,
+                                    articleId = articleKey,
                                     isBookmarked = true,
                                 ),
                             )
@@ -200,9 +190,7 @@ fun ArticleDetailScreen(
                             },
                         contentDescription = null,
                         tint = Color.Black,
-                        modifier =
-                            Modifier
-                                .size(24.dp),
+                        modifier = Modifier.size(24.dp),
                     )
                 }
             }
@@ -212,10 +200,7 @@ fun ArticleDetailScreen(
                 fontSize = 10.sp,
                 fontFamily = NotoSansRegular,
                 textAlign = TextAlign.Start,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
             )
 
             Text(
@@ -223,10 +208,7 @@ fun ArticleDetailScreen(
                 fontSize = 24.sp,
                 fontFamily = DomineRegular,
                 color = Color.Black,
-                modifier =
-                    Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
+                modifier = Modifier.padding(16.dp).fillMaxWidth(),
             )
 
             Divider(
@@ -297,9 +279,7 @@ fun ArticleDetailScreen(
                         .clickable { openLink() },
             ) {
                 ConstraintLayout(
-                    modifier =
-                        Modifier
-                            .padding(10.dp),
+                    modifier = Modifier.padding(10.dp),
                 ) {
                     val (image, content, icon) = createRefs()
 
@@ -325,14 +305,13 @@ fun ArticleDetailScreen(
 
                     Column(
                         modifier =
-                            Modifier
-                                .constrainAs(content) {
-                                    top.linkTo(image.top)
-                                    bottom.linkTo(image.bottom)
-                                    start.linkTo(image.end, 8.dp)
-                                    end.linkTo(icon.start, 16.dp)
-                                    width = Dimension.fillToConstraints
-                                },
+                            Modifier.constrainAs(content) {
+                                top.linkTo(image.top)
+                                bottom.linkTo(image.bottom)
+                                start.linkTo(image.end, 8.dp)
+                                end.linkTo(icon.start, 16.dp)
+                                width = Dimension.fillToConstraints
+                            },
                     ) {
                         Text(
                             text = "OPEN LINK",
@@ -353,21 +332,18 @@ fun ArticleDetailScreen(
                     IconButton(
                         onClick = { },
                         modifier =
-                            Modifier
-                                .constrainAs(icon) {
-                                    top.linkTo(parent.top)
-                                    bottom.linkTo(parent.bottom)
-                                    end.linkTo(parent.end)
-                                    height = Dimension.preferredWrapContent
-                                },
+                            Modifier.constrainAs(icon) {
+                                top.linkTo(parent.top)
+                                bottom.linkTo(parent.bottom)
+                                end.linkTo(parent.end)
+                                height = Dimension.preferredWrapContent
+                            },
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_exsternal_link),
                             contentDescription = null,
                             tint = Color.Black,
-                            modifier =
-                                Modifier
-                                    .size(20.dp),
+                            modifier = Modifier.size(20.dp),
                         )
                     }
                 }

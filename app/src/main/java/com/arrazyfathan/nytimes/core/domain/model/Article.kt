@@ -24,6 +24,9 @@ data class Article(
     val url: String,
     val isBookmarked: Boolean = false,
 ) {
+    val uniqueId: String
+        get() = articleId.ifBlank { uri.ifBlank { url.ifBlank { shortUrl } } }
+
     fun getImage(): String = multimedia.lastOrNull()?.url.orEmpty()
 
     fun getMainImage(): String = multimedia.firstOrNull()?.url.orEmpty()

@@ -21,9 +21,13 @@ fun TopStoriesDto.mapToDomain(): TopStories =
         section = this.section.orEmpty(),
     )
 
-fun ArticleDto.mapToDomain(): Article =
-    Article(
-        articleId = "",
+fun ArticleDto.mapToDomain(): Article {
+    val resolvedId =
+        this.uri?.takeIf { it.isNotBlank() }
+            ?: this.url?.takeIf { it.isNotBlank() }
+            ?: this.shortUrl.orEmpty()
+    return Article(
+        articleId = resolvedId,
         description = this.description.orEmpty(),
         byline = this.byline.orEmpty(),
         createdDate = this.createdDate.orEmpty(),
@@ -40,6 +44,7 @@ fun ArticleDto.mapToDomain(): Article =
         uri = this.uri.orEmpty(),
         url = this.url.orEmpty(),
     )
+}
 
 fun MultimediaDto.mapToDomain(): Multimedia =
     Multimedia(
@@ -55,7 +60,7 @@ fun MultimediaDto.mapToDomain(): Multimedia =
 
 fun ArticleEntity.mapToDomain(): Article =
     Article(
-        articleId = this.articleId,
+        articleId = this.articleId.ifBlank { this.uri.ifBlank { this.url } },
         description = this.description,
         byline = this.byline,
         createdDate = this.createdDate,
@@ -71,11 +76,12 @@ fun ArticleEntity.mapToDomain(): Article =
         updatedDate = this.updatedDate,
         uri = this.uri,
         url = this.url,
+        isBookmarked = this.isBookmarked,
     )
 
 fun Article.mapToEntity(): ArticleEntity =
     ArticleEntity(
-        articleId = this.articleId,
+        articleId = this.uniqueId,
         description = this.description,
         byline = this.byline,
         createdDate = this.createdDate,
@@ -91,6 +97,7 @@ fun Article.mapToEntity(): ArticleEntity =
         updatedDate = this.updatedDate,
         uri = this.uri,
         url = this.url,
+        isBookmarked = this.isBookmarked,
     )
 
 fun ArticleDto.mapToCachedEntity(
@@ -106,7 +113,7 @@ fun ArticleDto.mapToCachedEntity(
         querySection = querySection,
         uri = resolvedUri,
         position = position,
-        articleId = this.shortUrl.orEmpty(),
+        articleId = resolvedUri,
         description = this.description.orEmpty(),
         byline = this.byline.orEmpty(),
         createdDate = this.createdDate.orEmpty(),
@@ -126,7 +133,7 @@ fun ArticleDto.mapToCachedEntity(
 
 fun CachedArticleEntity.mapToDomain(): Article =
     Article(
-        articleId = this.articleId,
+        articleId = this.articleId.ifBlank { this.uri.ifBlank { this.url } },
         description = this.description,
         byline = this.byline,
         createdDate = this.createdDate,

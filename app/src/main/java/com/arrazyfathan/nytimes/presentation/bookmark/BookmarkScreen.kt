@@ -144,7 +144,7 @@ fun BookmarkScreen(
                 ) {
                     items(
                         items = state.articles,
-                        key = { it.articleId },
+                        key = { it.uniqueId },
                         contentType = { "article" },
                     ) { article ->
                         SwipeableNewsItemArticle(

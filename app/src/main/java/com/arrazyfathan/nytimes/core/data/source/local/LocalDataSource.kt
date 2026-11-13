@@ -21,11 +21,12 @@ class LocalDataSource
         fun getBookmarkedArticle(): Flow<List<ArticleEntity>> = nytDao.getBookmarkedArticle()
 
         suspend fun insertArticle(articleEntity: ArticleEntity) {
+            nytDao.deleteById("")
             nytDao.upsert(articleEntity)
         }
 
         suspend fun deleteArticle(articleEntity: ArticleEntity) {
-            nytDao.delete(articleEntity)
+            nytDao.deleteById(articleEntity.articleId)
         }
 
         fun updateArticle(

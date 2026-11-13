@@ -19,19 +19,22 @@ interface NytDao {
     @Upsert
     suspend fun upsert(article: ArticleEntity)
 
-    @Query("SELECT * FROM articles")
+    @Query("SELECT * FROM articles WHERE articleId != ''")
     fun getAllArticle(): Flow<List<ArticleEntity>>
 
-    @Query("SELECT * FROM articles where isBookmarked = 1")
+    @Query("SELECT * FROM articles WHERE isBookmarked = 1 AND articleId != ''")
     fun getBookmarkedArticle(): Flow<List<ArticleEntity>>
 
     @Delete
     suspend fun delete(article: ArticleEntity)
 
+    @Query("DELETE FROM articles WHERE articleId = :articleId OR articleId = ''")
+    suspend fun deleteById(articleId: String)
+
     @Update
     fun updateSavedArticle(article: ArticleEntity)
 
-    @Query("SELECT EXISTS (SELECT * FROM articles WHERE articleId = :articleId)")
+    @Query("SELECT EXISTS (SELECT * FROM articles WHERE articleId = :articleId AND articleId != '')")
     fun checkArticleIsBookmarked(articleId: String): Flow<Boolean>
 
     @Query("SELECT * FROM cached_articles WHERE querySection = :section ORDER BY position ASC")

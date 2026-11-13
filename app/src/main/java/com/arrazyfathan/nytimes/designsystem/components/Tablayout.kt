@@ -3,6 +3,7 @@ package com.arrazyfathan.nytimes.designsystem.components
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -76,7 +77,21 @@ fun Tabs(pagerState: PagerState) {
     val tabListState = rememberLazyListState()
 
     LaunchedEffect(pagerState.currentPage) {
-        tabListState.animateScrollToItem(pagerState.currentPage)
+        val layoutInfo = tabListState.layoutInfo
+        val itemInfo = layoutInfo.visibleItemsInfo.firstOrNull { it.index == pagerState.currentPage }
+        if (itemInfo == null) {
+            tabListState.animateScrollToItem(pagerState.currentPage)
+        } else {
+            val itemStart = itemInfo.offset
+            val itemEnd = itemInfo.offset + itemInfo.size
+            val viewportStart = layoutInfo.viewportStartOffset
+            val viewportEnd = layoutInfo.viewportEndOffset
+            if (itemStart < viewportStart) {
+                tabListState.animateScrollBy((itemStart - viewportStart).toFloat())
+            } else if (itemEnd > viewportEnd) {
+                tabListState.animateScrollBy((itemEnd - viewportEnd).toFloat())
+            }
+        }
     }
 
     LazyRow(

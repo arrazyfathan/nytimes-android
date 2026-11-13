@@ -2,6 +2,7 @@ package com.arrazyfathan.nytimes.core.data.source.local
 
 import com.arrazyfathan.nytimes.core.data.source.local.database.NytDao
 import com.arrazyfathan.nytimes.core.data.source.local.entities.ArticleEntity
+import com.arrazyfathan.nytimes.core.data.source.local.entities.CachedArticleEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -36,4 +37,13 @@ class LocalDataSource
         }
 
         fun checkArticleIsBookmarked(articleId: String): Flow<Boolean> = nytDao.checkArticleIsBookmarked(articleId)
+
+        fun getCachedTopStories(section: String): Flow<List<CachedArticleEntity>> = nytDao.getCachedTopStories(section)
+
+        suspend fun replaceCachedTopStories(
+            section: String,
+            articles: List<CachedArticleEntity>,
+        ) {
+            nytDao.replaceCachedTopStories(section, articles)
+        }
     }

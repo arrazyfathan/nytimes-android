@@ -7,12 +7,14 @@ import com.arrazyfathan.nytimes.core.domain.AppError
 import com.arrazyfathan.nytimes.core.domain.Resource
 import com.arrazyfathan.nytimes.core.domain.model.Article
 import com.arrazyfathan.nytimes.core.domain.repository.ITopStoriesRepository
+import com.arrazyfathan.nytimes.core.utils.mapToCachedEntity
 import com.arrazyfathan.nytimes.core.utils.mapToDomain
 import com.arrazyfathan.nytimes.core.utils.mapToEntity
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
@@ -31,26 +33,71 @@ class TopStoriesRepository
         private val remoteDataSource: RemoteDataSource,
         private val localDataSource: LocalDataSource,
     ) : ITopStoriesRepository {
-        override fun getTopStories(section: String): Flow<Resource<List<Article>>> =
-            flow {
-                emit(Resource.Loading())
-                when (val response = remoteDataSource.getTopStoriesArticle(section).first()) {
+        override fun getTopStories(section: String): Flow<Resource<List<Article>>> {
+            val normalizedSection = section.lowercase()
+            return flow {
+                val cachedEntities = localDataSource.getCachedTopStories(normalizedSection).first()
+                if (cachedEntities.isNotEmpty()) {
+                    emit(Resource.Success(cachedEntities.map { it.mapToDomain() }))
+                } else {
+                    emit(Resource.Loading())
+                }
+
+                when (val response = remoteDataSource.getTopStoriesArticle(normalizedSection).first()) {
                     is ApiResponse.Success -> {
-                        emit(Resource.Success(response.data.map { it.mapToDomain() }))
+                        val validDtos = response.data.filter { !it.title.isNullOrBlank() }
+                        val entities =
+                            validDtos.mapIndexed { index, dto ->
+                                dto.mapToCachedEntity(
+                                    querySection = normalizedSection,
+                                    position = index,
+                                )
+                            }
+                        localDataSource.replaceCachedTopStories(normalizedSection, entities)
+                        emitAll(
+                            localDataSource.getCachedTopStories(normalizedSection).map { list ->
+                                Resource.Success(list.map { it.mapToDomain() })
+                            },
+                        )
                     }
 
                     is ApiResponse.Empty -> {
-                        emit(Resource.Error(AppError.NotFound))
+                        if (cachedEntities.isEmpty()) {
+                            emit(Resource.Error(AppError.NotFound))
+                        } else {
+                            emitAll(
+                                localDataSource.getCachedTopStories(normalizedSection).map { list ->
+                                    Resource.Success(list.map { it.mapToDomain() })
+                                },
+                            )
+                        }
                     }
 
                     is ApiResponse.Error -> {
-                        emit(Resource.Error(response.error))
+                        if (cachedEntities.isEmpty()) {
+                            emit(Resource.Error(response.error))
+                        } else {
+                            emitAll(
+                                localDataSource.getCachedTopStories(normalizedSection).map { list ->
+                                    Resource.Success(list.map { it.mapToDomain() })
+                                },
+                            )
+                        }
                     }
                 }
             }.catch { throwable ->
                 if (throwable is CancellationException) throw throwable
-                emit(Resource.Error(AppError.Unknown(throwable.localizedMessage)))
+                val fallback =
+                    runCatching {
+                        localDataSource.getCachedTopStories(normalizedSection).first()
+                    }.getOrNull().orEmpty()
+                if (fallback.isNotEmpty()) {
+                    emit(Resource.Success(fallback.map { it.mapToDomain() }))
+                } else {
+                    emit(Resource.Error(AppError.Unknown(throwable.localizedMessage)))
+                }
             }
+        }
 
         override fun getAllSavedArticle(): Flow<List<Article>> =
             localDataSource.getAllArticle().map { articles ->

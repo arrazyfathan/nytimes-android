@@ -1,7 +1,13 @@
 package com.arrazyfathan.nytimes.core.data.source.local.database
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
+import androidx.room.Upsert
 import com.arrazyfathan.nytimes.core.data.source.local.entities.ArticleEntity
+import com.arrazyfathan.nytimes.core.data.source.local.entities.CachedArticleEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -27,4 +33,22 @@ interface NytDao {
 
     @Query("SELECT EXISTS (SELECT * FROM articles WHERE articleId = :articleId)")
     fun checkArticleIsBookmarked(articleId: String): Flow<Boolean>
+
+    @Query("SELECT * FROM cached_articles WHERE querySection = :section ORDER BY position ASC")
+    fun getCachedTopStories(section: String): Flow<List<CachedArticleEntity>>
+
+    @Upsert
+    suspend fun upsertCachedTopStories(articles: List<CachedArticleEntity>)
+
+    @Query("DELETE FROM cached_articles WHERE querySection = :section")
+    suspend fun clearCachedTopStories(section: String)
+
+    @Transaction
+    suspend fun replaceCachedTopStories(
+        section: String,
+        articles: List<CachedArticleEntity>,
+    ) {
+        clearCachedTopStories(section)
+        upsertCachedTopStories(articles)
+    }
 }
